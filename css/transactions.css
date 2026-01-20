@@ -1,0 +1,93 @@
+/**
+ * Estilos para transacciones - Estados específicos y nuevas
+ */
+
+/* Estados de transacciones específicos */
+.transaction-card[data-status="en_proceso"] {
+  border-left: 4px solid #ffc107;
+}
+
+.transaction-card[data-status="en_proceso"] .transaction-type {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.transaction-card[data-status="realizada"] {
+  border-left: 4px solid #17a2b8;
+}
+
+.transaction-card[data-status="realizada"] .transaction-type {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.transaction-card[data-status="confirmada"] {
+  border-left: 4px solid #28a745;
+}
+
+.transaction-card[data-status="confirmada"] .transaction-type {
+  background: #d4edda;
+  color: #155724;
+}
+
+/* Botones específicos por estado */
+.btn-complete {
+  background: var(--patio-verde-pasto);
+  color: white;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+}
+
+.btn-complete:hover {
+  background: var(--patio-verde-pasto-oscuro);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-view {
+  background: var(--patio-azul-cielo);
+  color: white;
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
+}
+
+.btn-view:hover {
+  background: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+/* Estilos para transacciones nuevas */
+.transaction-new {
+  border: 2px solid #ff4444 !important;
+  background: rgba(255, 68, 68, 0.05) !important;
+  animation: highlightNew 3s ease-in-out;
+}
+
+@keyframes highlightNew {
+  0% {
+    background: rgba(255, 68, 68, 0.2);
+    transform: scale(1.02);
+  }
+  50% {
+    background: rgba(255, 68, 68, 0.1);
+    transform: scale(1.01);
+  }
+  100% {
+    background: rgba(255, 68, 68, 0.05);
+    transform: scale(1);
+  }
+}
+
+.new-transaction-label {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff4444;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 10;
+  animation: pulse 2s infinite;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

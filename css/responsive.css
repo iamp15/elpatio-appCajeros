@@ -1,0 +1,229 @@
+/**
+ * Estilos responsive para diferentes dispositivos
+ */
+
+/* Responsive para menú lateral */
+@media (max-width: 768px) {
+  .sidebar-menu {
+    width: 280px;
+  }
+  
+  .header-with-menu .header-content h1 {
+    font-size: 20px;
+  }
+  
+  .menu-toggle-btn {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .menu-toggle-btn .menu-icon {
+    font-size: 22px;
+  }
+}
+
+/* Responsive general */
+@media (max-width: 480px) {
+  .container {
+    padding: 30px 20px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+}
+
+/* Responsive para móviles - Modales */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .transaction-details-modal {
+    max-height: 95vh;
+    width: 95%;
+    max-width: 95vw;
+  }
+  
+  .modal-rechazo-deposito .modal-content,
+  .modal-ajuste-monto .modal-content,
+  .deposito-completado-modal .modal-content,
+  .deposito-rechazado-modal .modal-content {
+    padding: 16px 20px;
+  }
+  
+  .modal-rechazo-deposito .form-textarea,
+  .modal-ajuste-monto .form-textarea {
+    min-height: 80px;
+    font-size: 14px;
+  }
+
+  .modal-header,
+  .transaction-info,
+  .modal-actions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+/* Responsive para toast */
+@media (max-width: 768px) {
+  .toast-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .toast {
+    padding: 14px 16px;
+  }
+
+  .toast-icon {
+    font-size: 20px;
+  }
+
+  .toast-title {
+    font-size: 13px;
+  }
+
+  .toast-message {
+    font-size: 12px;
+  }
+}
+
+/* Responsive para modal de confirmación */
+@media (max-width: 768px) {
+  .modal {
+    width: 95%;
+    margin: 20px;
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  .modal-title {
+    font-size: 16px;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-btn {
+    width: 100%;
+  }
+}
+
+/* Responsive para notificaciones */
+@media (max-width: 768px) {
+  .notifications-float-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    top: 15px;
+    right: 15px;
+  }
+
+  .notifications-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .notification-card {
+    padding: 12px;
+  }
+
+  .notification-title {
+    font-size: 14px;
+  }
+
+  .notification-message {
+    font-size: 13px;
+  }
+
+  .notification-icon {
+    font-size: 20px;
+    margin-right: 8px;
+  }
+
+  .notification-body {
+    margin-left: 28px;
+  }
+
+  .btn-back {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+}
+
+/* Responsive para historial */
+@media (max-width: 768px) {
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-actions {
+    flex-direction: column;
+  }
+
+  .filters-actions .btn {
+    width: 100%;
+  }
+
+  .history-list {
+    max-height: 50vh;
+  }
+
+  .history-initial-state {
+    padding: 40px 16px;
+  }
+
+  .history-initial-state .initial-state-icon {
+    font-size: 60px;
+  }
+
+  .history-initial-state h4 {
+    font-size: 18px;
+  }
+
+  .history-initial-state p {
+    font-size: 14px;
+  }
+}
+
+/* Responsive para tabs */
+@media (max-width: 768px) {
+  .tabs-header {
+    flex-direction: column;
+  }
+
+  .tab-btn {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 15px;
+    font-size: 12px;
+  }
+
+  .tab-count {
+    margin-left: auto;
+  }
+}

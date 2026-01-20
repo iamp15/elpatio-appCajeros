@@ -1,0 +1,75 @@
+/**
+ * Estilos para la pantalla de perfil
+ */
+
+/* ===== PANTALLA DE PERFIL ===== */
+
+.perfil-content {
+  padding-top: 10px;
+}
+
+.perfil-section {
+  margin-bottom: 24px;
+}
+
+.perfil-section h3 {
+  font-size: 16px;
+  color: var(--patio-marron-madera);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.perfil-info-card {
+  background: var(--patio-blanco-nube);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.perfil-info-card .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.perfil-info-card .info-row:last-child {
+  border-bottom: none;
+}
+
+.perfil-info-card .info-label {
+  font-weight: 500;
+  color: var(--patio-gris-piedra);
+  font-size: 14px;
+}
+
+.perfil-info-card .info-value {
+  font-weight: 600;
+  color: var(--patio-marron-madera);
+  font-size: 14px;
+  text-align: right;
+}
+
+/* Estado de conexión */
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connection-status .status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--patio-gris-piedra);
+}
+
+.connection-status.connected .status-dot {
+  background: var(--patio-verde-pasto);
+  box-shadow: 0 0 8px var(--patio-verde-pasto);
+}
+
+.connection-status.disconnected .status-dot {
+  background: var(--patio-rojo-ladrillo);
+}

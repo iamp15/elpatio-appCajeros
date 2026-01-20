@@ -1,0 +1,172 @@
+/**
+ * Estilos para modales de verificación de pago
+ */
+
+/* Estilos para pop-ups de verificación de pago */
+.verificar-pago-modal .modal-header {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: white;
+}
+
+.verificar-pago-modal .modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.verificar-pago-modal .btn-success {
+  background: var(--patio-verde-pasto);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.verificar-pago-modal .btn-success:hover {
+  background: var(--patio-verde-pasto-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.verificar-pago-modal .btn-danger {
+  background: var(--patio-rojo-ladrillo);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(229, 115, 115, 0.3);
+}
+
+.verificar-pago-modal .btn-danger:hover {
+  background: var(--patio-rojo-ladrillo-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 115, 115, 0.4);
+}
+
+.verificar-pago-modal .payment-info {
+  background: var(--patio-amarillo-suave);
+  border: 1px solid var(--patio-amarillo-sol);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.verificar-pago-modal .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ffe0b2;
+}
+
+.verificar-pago-modal .info-row:last-child {
+  border-bottom: none;
+}
+
+.verificar-pago-modal .label {
+  font-weight: 600;
+  color: #e65100;
+}
+
+.verificar-pago-modal .value {
+  font-weight: 500;
+  color: var(--patio-marron-madera);
+}
+
+.verificar-pago-modal .value.amount {
+  color: #2e7d32;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.verificar-pago-modal .value.reference {
+  font-family: monospace;
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.reference-code {
+  font-family: monospace;
+  background: var(--patio-amarillo-suave);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: var(--patio-marron-madera);
+  border: 1px solid var(--patio-amarillo-sol);
+}
+
+.verificar-pago-modal .verification-message {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 12px;
+  margin: 16px 0;
+  border-radius: 4px;
+}
+
+.verificar-pago-modal .verification-message p {
+  margin: 0;
+  color: #1565c0;
+  font-weight: 500;
+}
+
+/* Estilos para Verificación de Pago con Monto */
+.verificar-pago-modal .monto-verificacion {
+  background: #e3f2fd;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.verificar-pago-modal .label-hint {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #666;
+  margin-top: 4px;
+}
+
+.verificar-pago-modal .form-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.verificar-pago-modal .form-input:focus {
+  outline: none;
+  border-color: var(--patio-verde-esmeralda, #2e7d32);
+}
+
+.verificar-pago-modal .monto-alert {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.verificar-pago-modal .monto-alert.warning {
+  background: #fff3e0;
+  border: 1px solid #ff9800;
+  color: #f57c00;
+}
+
+.verificar-pago-modal .monto-alert.error {
+  background: #ffebee;
+  border: 1px solid #f44336;
+  color: #c62828;
+}

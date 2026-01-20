@@ -1,0 +1,213 @@
+/**
+ * Estilos base - Reset, body, app, screens, forms, buttons
+ */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(
+    135deg,
+    var(--patio-verde-pasto) 0%,
+    var(--patio-azul-cielo) 100%
+  );
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* App container */
+#app {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Screens */
+.screen {
+  display: none;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.screen.active {
+  display: block;
+}
+
+.container {
+  padding: 40px 30px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  color: var(--patio-marron-madera);
+  font-size: 28px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.header p {
+  color: var(--patio-gris-piedra);
+  font-size: 14px;
+}
+
+/* Header con menú */
+.header-with-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+.header-with-menu .header-content {
+  flex: 1;
+}
+
+.header-with-menu .header-content h1 {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+/* Botón de menú hamburguesa */
+.menu-toggle-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: var(--patio-verde-pasto);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  margin-right: 16px;
+}
+
+.menu-toggle-btn:hover {
+  background: var(--patio-verde-pasto-oscuro);
+  transform: scale(1.05);
+}
+
+.menu-toggle-btn .menu-icon {
+  font-size: 24px;
+}
+
+/* Formularios */
+.form {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--patio-marron-madera);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid var(--patio-gris-piedra);
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--patio-azul-cielo);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Botones */
+.btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.btn-primary {
+  background: var(--patio-verde-pasto);
+  color: white;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--patio-verde-pasto-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.btn-secondary {
+  background: var(--patio-marron-madera);
+  color: white;
+  box-shadow: 0 2px 4px rgba(141, 110, 99, 0.2);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--patio-marron-madera-claro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(141, 110, 99, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Loading spinner */
+.loading {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mensaje de error */
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  font-size: 14px;
+  text-align: center;
+}
