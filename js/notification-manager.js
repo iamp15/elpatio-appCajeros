@@ -4,6 +4,7 @@
  */
 
 import { API } from "./api.js";
+import { formatearMontoVenezolano } from "./config.js";
 
 class NotificationListManager {
   constructor() {
@@ -164,7 +165,7 @@ class NotificationListManager {
           <h4 class="notification-title">${notificacion.titulo}</h4>
           <span class="notification-time">${fecha}</span>
         </div>
-        <button class="notification-delete" onclick="window.notificationListManager.deleteNotification('${
+        <button class="notification-delete" onclick="event.stopPropagation(); window.notificationListManager.deleteNotification('${
           notificacion._id
         }')" title="Eliminar">
           ×
@@ -175,6 +176,15 @@ class NotificationListManager {
         ${this.renderNotificationData(notificacion.datos)}
       </div>
     `;
+
+    // Agregar evento de clic para mostrar detalles
+    card.addEventListener("click", (e) => {
+      // No abrir modal si se hace clic en el botón de eliminar
+      if (e.target.classList.contains("notification-delete")) {
+        return;
+      }
+      this.showNotificationDetail(notificacion);
+    });
 
     return card;
   }
@@ -194,7 +204,7 @@ class NotificationListManager {
       html += `
         <div class="notification-data-item">
           <span class="notification-data-label">Monto:</span>
-          <span>${(datos.monto / 100).toFixed(2)} Bs</span>
+          <span>${formatearMontoVenezolano(datos.monto)} Bs</span>
         </div>
       `;
     }
@@ -386,6 +396,132 @@ class NotificationListManager {
       notificationsScreen.classList.contains("active")
     ) {
       this.renderNotifications();
+    }
+  }
+
+  /**
+   * Mostrar modal con detalles de la notificación
+   */
+  showNotificationDetail(notificacion) {
+    // Crear o obtener el modal
+    let modal = document.getElementById("notification-detail-modal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "notification-detail-modal";
+      modal.className = "notification-detail-modal";
+      document.body.appendChild(modal);
+    }
+
+    // Obtener icono según tipo
+    const icon = this.getNotificationIcon(notificacion.tipo);
+
+    // Formatear fecha
+    const fecha = this.formatDate(notificacion.createdAt);
+
+    // Formatear fecha completa
+    const fechaCompleta = new Date(notificacion.createdAt).toLocaleString(
+      "es-ES",
+      {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
+
+    // Renderizar datos adicionales
+    let datosHtml = "";
+    if (notificacion.datos && Object.keys(notificacion.datos).length > 0) {
+      datosHtml = '<div class="notification-detail-data">';
+      if (notificacion.datos.monto) {
+        datosHtml += `
+          <div class="notification-detail-data-item">
+            <span class="notification-detail-data-label">Monto:</span>
+            <span class="notification-detail-data-value">${formatearMontoVenezolano(
+              notificacion.datos.monto
+            )} Bs</span>
+          </div>
+        `;
+      }
+      if (notificacion.datos.jugadorNombre) {
+        datosHtml += `
+          <div class="notification-detail-data-item">
+            <span class="notification-detail-data-label">Jugador:</span>
+            <span class="notification-detail-data-value">${
+              notificacion.datos.jugadorNombre
+            }</span>
+          </div>
+        `;
+      }
+      if (notificacion.datos.referencia) {
+        datosHtml += `
+          <div class="notification-detail-data-item">
+            <span class="notification-detail-data-label">Referencia:</span>
+            <span class="notification-detail-data-value">${
+              notificacion.datos.referencia
+            }</span>
+          </div>
+        `;
+      }
+      if (notificacion.datos.transaccionId) {
+        datosHtml += `
+          <div class="notification-detail-data-item">
+            <span class="notification-detail-data-label">Transacción ID:</span>
+            <span class="notification-detail-data-value">${
+              notificacion.datos.transaccionId
+            }</span>
+          </div>
+        `;
+      }
+      if (notificacion.datos.motivo) {
+        datosHtml += `
+          <div class="notification-detail-data-item">
+            <span class="notification-detail-data-label">Motivo:</span>
+            <span class="notification-detail-data-value">${
+              notificacion.datos.motivo
+            }</span>
+          </div>
+        `;
+      }
+      datosHtml += "</div>";
+    }
+
+    modal.innerHTML = `
+      <div class="notification-detail-content">
+        <button class="notification-detail-close" onclick="window.notificationListManager.closeNotificationDetail()">×</button>
+        <div class="notification-detail-header">
+          <span class="notification-detail-icon">${icon}</span>
+          <div class="notification-detail-title-wrapper">
+            <h3 class="notification-detail-title">${notificacion.titulo}</h3>
+            <span class="notification-detail-time">${fechaCompleta}</span>
+          </div>
+        </div>
+        <div class="notification-detail-body">
+          <p class="notification-detail-message">${notificacion.mensaje}</p>
+          ${datosHtml}
+        </div>
+      </div>
+    `;
+
+    // Mostrar modal
+    modal.classList.add("active");
+
+    // Cerrar al hacer clic fuera del contenido
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        this.closeNotificationDetail();
+      }
+    });
+  }
+
+  /**
+   * Cerrar modal de detalles
+   */
+  closeNotificationDetail() {
+    const modal = document.getElementById("notification-detail-modal");
+    if (modal) {
+      modal.classList.remove("active");
     }
   }
 }

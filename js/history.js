@@ -269,11 +269,15 @@ class HistoryManager {
   }
 
   /**
-   * Formatear monto para mostrar
+   * Formatear monto para mostrar en formato venezolano
    */
   formatAmount(monto) {
     return (monto / TRANSACTION_CONFIG.AMOUNT_DIVISOR).toLocaleString(
-      TRANSACTION_CONFIG.LOCALE
+      TRANSACTION_CONFIG.LOCALE,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
     );
   }
 

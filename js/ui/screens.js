@@ -17,8 +17,14 @@ export class ScreensManager {
    * Mostrar pantalla de login
    */
   showLoginScreen() {
-    this.elements.loginScreen?.classList.add("active");
+    // Ocultar todas las pantallas principales
     this.elements.dashboardScreen?.classList.remove("active");
+    this.elements.historialScreen?.classList.remove("active");
+    this.elements.saldoScreen?.classList.remove("active");
+    this.elements.perfilScreen?.classList.remove("active");
+    
+    // Mostrar pantalla de login
+    this.elements.loginScreen?.classList.add("active");
     this.elements.loginForm?.reset();
     this.currentState = APP_STATES.LOGIN;
   }
@@ -40,6 +46,7 @@ export class ScreensManager {
     this.elements.loginScreen?.classList.remove("active");
     this.elements.dashboardScreen?.classList.remove("active");
     this.elements.historialScreen?.classList.remove("active");
+    this.elements.saldoScreen?.classList.remove("active");
     this.elements.perfilScreen?.classList.remove("active");
 
     // Mostrar la pantalla correspondiente
@@ -51,6 +58,10 @@ export class ScreensManager {
       case "historial":
         this.elements.historialScreen?.classList.add("active");
         this.currentState = APP_STATES.HISTORIAL;
+        break;
+      case "saldo":
+        this.elements.saldoScreen?.classList.add("active");
+        this.currentState = APP_STATES.HISTORIAL; // Reutilizar estado similar
         break;
       case "perfil":
         this.elements.perfilScreen?.classList.add("active");

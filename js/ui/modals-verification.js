@@ -3,15 +3,17 @@
  */
 
 import { ModalsManager } from "./modals.js";
+import { formatearMontoVenezolano, formatearMontoBsVenezolano } from "../config.js";
 
 /**
  * Clase para gestionar modales de verificación de pago
  */
 export class VerificationModalsManager extends ModalsManager {
-  constructor(showAlertCallback, closeModalCallback) {
+  constructor(showAlertCallback, closeModalCallback, rejectPaymentCallback) {
     super();
     this.showAlert = showAlertCallback;
     this.closeModal = closeModalCallback;
+    this.handleRejectPayment = rejectPaymentCallback;
     this.processingPayment = null;
     this.handleVerificarConfirmClick = null;
   }
@@ -50,7 +52,7 @@ export class VerificationModalsManager extends ModalsManager {
               💰 Depósito
             </div>
             <div class="transaction-amount">
-              ${montoSolicitado.toFixed(2)} Bs
+              ${formatearMontoBsVenezolano(montoSolicitado)} Bs
             </div>
           </div>
           
@@ -88,7 +90,7 @@ export class VerificationModalsManager extends ModalsManager {
               placeholder="0.00"
               step="0.01"
               min="0"
-              value="${montoSolicitado.toFixed(2)}"
+              value="${montoSolicitado}"
             />
             <div id="monto-alert" class="monto-alert" style="display: none;"></div>
           </div>
@@ -119,10 +121,10 @@ export class VerificationModalsManager extends ModalsManager {
         
         if (montoRecibido < montoSolicitado) {
           montoAlert.className = 'monto-alert error';
-          montoAlert.innerHTML = `⚠️ El monto recibido es MENOR al solicitado. Diferencia: ${(montoSolicitado - montoRecibido).toFixed(2)} Bs`;
+          montoAlert.innerHTML = `⚠️ El monto recibido es MENOR al solicitado. Diferencia: ${formatearMontoBsVenezolano(montoSolicitado - montoRecibido)} Bs`;
         } else {
           montoAlert.className = 'monto-alert warning';
-          montoAlert.innerHTML = `⚠️ El monto recibido es MAYOR al solicitado. Diferencia: ${(montoRecibido - montoSolicitado).toFixed(2)} Bs`;
+          montoAlert.innerHTML = `⚠️ El monto recibido es MAYOR al solicitado. Diferencia: ${formatearMontoBsVenezolano(montoRecibido - montoSolicitado)} Bs`;
         }
       } else {
         montoAlert.style.display = 'none';
@@ -174,13 +176,33 @@ export class VerificationModalsManager extends ModalsManager {
 
     // Configurar botón de rechazo
     const rejectBtn = document.querySelector('.reject-payment-btn');
-    if (rejectBtn && this.handleRejectPayment) {
-      rejectBtn.addEventListener('click', (e) => {
-        const transaccionId = e.currentTarget.getAttribute('data-transaction-id');
-        if (transaccionId && this.handleRejectPayment) {
-          this.handleRejectPayment(transaccionId);
+    if (rejectBtn) {
+      // Remover listener anterior si existe para evitar duplicados
+      const newRejectBtn = rejectBtn.cloneNode(true);
+      rejectBtn.parentNode.replaceChild(newRejectBtn, rejectBtn);
+      
+      newRejectBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const transaccionId = newRejectBtn.getAttribute('data-transaction-id');
+        console.log('❌ [UI] Botón rechazar clickeado para transacción:', transaccionId);
+        console.log('❌ [UI] handleRejectPayment existe:', !!this.handleRejectPayment);
+        
+        if (transaccionId) {
+          if (this.handleRejectPayment) {
+            this.handleRejectPayment(transaccionId);
+          } else {
+            console.error('❌ [UI] handleRejectPayment no está definido');
+            this.showAlert('Error: No se puede procesar el rechazo. Por favor, recarga la página.');
+          }
+        } else {
+          console.error('❌ [UI] No se encontró transaccionId en el botón de rechazar');
+          this.showAlert('Error: No se pudo identificar la transacción.');
         }
       });
+    } else {
+      console.warn('⚠️ [UI] No se encontró el botón de rechazar pago');
     }
   }
 
@@ -237,12 +259,12 @@ export class VerificationModalsManager extends ModalsManager {
           <div class="monto-comparison">
             <div class="monto-item">
               <div class="monto-label">Monto Solicitado</div>
-              <div class="monto-value">${montoSolicitado.toFixed(2)} Bs</div>
+              <div class="monto-value">${formatearMontoBsVenezolano(montoSolicitado)} Bs</div>
             </div>
             <div class="monto-arrow">→</div>
             <div class="monto-item">
               <div class="monto-label">Monto Recibido</div>
-              <div class="monto-value">${montoRecibido.toFixed(2)} Bs</div>
+              <div class="monto-value">${formatearMontoBsVenezolano(montoRecibido)} Bs</div>
             </div>
           </div>
 
@@ -252,7 +274,7 @@ export class VerificationModalsManager extends ModalsManager {
               type="number" 
               id="monto-ajustado-final" 
               class="form-input" 
-              value="${montoRecibido.toFixed(2)}"
+              value="${montoRecibido}"
               step="0.01"
               min="0"
             />

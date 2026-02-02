@@ -24,23 +24,37 @@
   width: 90%;
   max-width: min(600px, 90vw);
   max-height: 90vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   animation: slideIn 0.3s ease-out;
+  overflow: hidden;
 }
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 20px 24px 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
   margin: 0;
   color: var(--tg-theme-text-color, #333);
   font-size: 20px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.modal-header h2 .modal-icon {
+  display: inline-block;
 }
 
 .close-btn {
@@ -51,6 +65,10 @@
   color: var(--tg-theme-hint-color, #666);
   padding: 4px;
   line-height: 1;
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .close-btn:hover {
@@ -59,6 +77,9 @@
 
 .transaction-info {
   padding: 20px 24px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .details-grid {
@@ -147,16 +168,23 @@
 
 .modal-actions {
   display: flex;
+  justify-content: center;
   gap: 12px;
   padding: 20px 24px;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  background: var(--tg-theme-bg-color, #ffffff);
 }
 
 .modal-actions .btn {
-  flex: 1;
+  min-width: 120px;
+  max-width: 200px;
 }
 
 .modal-content {
   padding: 20px 24px;
   background: var(--tg-theme-bg-color, #ffffff);
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }

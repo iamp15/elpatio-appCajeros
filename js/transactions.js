@@ -161,11 +161,15 @@ class TransactionManager {
   }
 
   /**
-   * Formatear monto para mostrar
+   * Formatear monto para mostrar en formato venezolano
    */
   formatAmount(monto) {
     return (monto / TRANSACTION_CONFIG.AMOUNT_DIVISOR).toLocaleString(
-      TRANSACTION_CONFIG.LOCALE
+      TRANSACTION_CONFIG.LOCALE,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
     );
   }
 
@@ -425,7 +429,7 @@ class TransactionManager {
     const modalHTML = `
       <div class="transaction-details-modal">
         <div class="modal-header">
-          <h2>✅ Transacción Aceptada</h2>
+          <h2><span class="modal-icon">✅</span> Transacción Aceptada</h2>
           <button onclick="closeTransactionDetails()" class="close-btn">&times;</button>
         </div>
         

@@ -3,11 +3,16 @@
  */
 
 import { UI } from "../ui.js";
+import { formatearMontoVenezolano } from "../config.js";
 
 /**
  * Crear handlers de transacciones
  */
 export function createTransactionHandlers(app) {
+  // Set para rastrear transacciones que ya están siendo confirmadas después de ajuste
+  // Declarado dentro de la función para asegurar que esté en el scope correcto
+  const confirmingAfterAdjustment = new Set();
+  
   return {
     /**
      * Manejar nueva solicitud de depósito via WebSocket
@@ -31,7 +36,7 @@ export function createTransactionHandlers(app) {
           data.jugador?.nombre ||
           data.jugador?.nickname ||
           `Jugador ${data.jugadorId}`;
-        const montoBs = (data.monto / 100).toFixed(2); // Convertir centavos a bolívares
+        const montoBs = formatearMontoVenezolano(data.monto); // Convertir centavos a bolívares con formato venezolano
 
         console.log(`📋 Nueva solicitud: ${jugadorNombre} - ${montoBs} Bs`);
 
@@ -93,6 +98,13 @@ export function createTransactionHandlers(app) {
 
         // Limpiar el estado de procesamiento
         UI.processingPayment = null;
+        
+        // Limpiar flag de confirmación después de ajuste si existe
+        // Nota: confirmingAfterAdjustment está en el scope de createTransactionHandlers
+        if (transaccionId && confirmingAfterAdjustment && confirmingAfterAdjustment.has(transaccionId)) {
+          console.log(`✅ [DEPOSITO] Limpiando flag de confirmación después de ajuste para ${transaccionId}`);
+          confirmingAfterAdjustment.delete(transaccionId);
+        }
 
         // Rehabilitar botones de pago
         if (transaccionId) {
@@ -108,6 +120,9 @@ export function createTransactionHandlers(app) {
         console.error("Error manejando depósito completado:", error);
         // Asegurar limpieza incluso en caso de error
         UI.processingPayment = null;
+        if (data.transaccionId && confirmingAfterAdjustment) {
+          confirmingAfterAdjustment.delete(data.transaccionId);
+        }
       }
     },
 
@@ -233,19 +248,69 @@ export function createTransactionHandlers(app) {
         console.log("💰 [APP] Monto ajustado recibido, confirmando automáticamente:", data);
         const { transaccionId } = data;
         
-        // Limpiar processingPayment para permitir la confirmación
+        if (!transaccionId) {
+          console.error("💰 [APP] No se recibió transaccionId en monto-ajustado");
+          return;
+        }
+        
+        // Protección contra eventos duplicados
+        if (confirmingAfterAdjustment && confirmingAfterAdjustment.has(transaccionId)) {
+          console.warn(`💰 [APP] Ya se está confirmando ${transaccionId} después del ajuste, ignorando evento duplicado`);
+          return;
+        }
+        
+        // Marcar como en proceso de confirmación
+        if (confirmingAfterAdjustment) {
+          confirmingAfterAdjustment.add(transaccionId);
+          
+          // Limpiar después de 10 segundos para permitir reintentos si es necesario
+          setTimeout(() => {
+            if (confirmingAfterAdjustment) {
+              confirmingAfterAdjustment.delete(transaccionId);
+            }
+          }, 10000);
+        }
+        
+        // Limpiar processingPayment en todos los lugares para permitir la confirmación
+        // Esto es crítico porque procesarAjusteMonto establece el flag
         if (UI.processingPayment === transaccionId) {
+          console.log(`💰 [APP] Limpiando UI.processingPayment para ${transaccionId}`);
           UI.processingPayment = null;
         }
         
-        // Confirmar automáticamente el pago después del ajuste
-        if (transaccionId) {
-          setTimeout(() => {
-            UI.handleConfirmPayment(transaccionId);
-          }, 300);
+        // También limpiar en verificationModals si existe
+        if (UI.verificationModals) {
+          if (UI.verificationModals.processingPayment === transaccionId) {
+            console.log(`💰 [APP] Limpiando verificationModals.processingPayment para ${transaccionId}`);
+            UI.verificationModals.processingPayment = null;
+          }
         }
+        
+        // Limpiar también en completedTransactions para permitir nueva confirmación
+        if (window.cajeroWebSocket && window.cajeroWebSocket.completedTransactions) {
+          if (window.cajeroWebSocket.completedTransactions.has(transaccionId)) {
+            console.log(`💰 [APP] Removiendo ${transaccionId} de completedTransactions`);
+            window.cajeroWebSocket.completedTransactions.delete(transaccionId);
+          }
+        }
+        
+        // Confirmar automáticamente el pago después del ajuste
+        // Usar un delay para asegurar que el backend procesó el ajuste y limpiar cualquier flag residual
+        setTimeout(() => {
+          console.log(`💰 [APP] Intentando confirmar pago para ${transaccionId} después del ajuste`);
+          // Verificar una vez más que los flags estén limpios
+          if (UI.verificationModals && UI.verificationModals.processingPayment === transaccionId) {
+            console.log(`💰 [APP] Limpiando flag una vez más antes de confirmar`);
+            UI.verificationModals.processingPayment = null;
+          }
+          UI.handleConfirmPayment(transaccionId);
+        }, 800); // Delay suficiente para que el backend procese el ajuste
       } catch (error) {
         console.error("Error manejando monto ajustado:", error);
+        // Limpiar flag en caso de error
+        if (data.transaccionId && confirmingAfterAdjustment) {
+          confirmingAfterAdjustment.delete(data.transaccionId);
+        }
       }
     },
 

@@ -3,6 +3,7 @@
  */
 
 import { ModalsManager } from "./modals.js";
+import { formatearMontoVenezolano } from "../config.js";
 
 /**
  * Clase para gestionar modales de resultado de pago
@@ -26,15 +27,11 @@ export class PaymentModalsManager extends ModalsManager {
             </div>
             <div class="info-row">
               <span class="label">Monto:</span>
-              <span class="value amount">${(data.monto / 100).toFixed(
-                2
-              )} Bs</span>
+              <span class="value amount">${formatearMontoVenezolano(data.monto)} Bs</span>
             </div>
             <div class="info-row">
               <span class="label">Nuevo saldo del jugador:</span>
-              <span class="value balance">${(data.saldoNuevo / 100).toFixed(
-                2
-              )} Bs</span>
+              <span class="value balance">${formatearMontoVenezolano(data.saldoNuevo)} Bs</span>
             </div>
           </div>
           <div class="success-message">
@@ -43,7 +40,7 @@ export class PaymentModalsManager extends ModalsManager {
           </div>
         </div>
         <div class="modal-actions">
-          <button class="btn btn-primary close-btn">Continuar</button>
+          <button class="btn btn-primary close-btn">Cerrar</button>
         </div>
       </div>
     `;

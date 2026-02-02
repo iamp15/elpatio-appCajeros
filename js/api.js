@@ -245,6 +245,43 @@ class APIManager {
       method: "DELETE",
     });
   }
+
+  /**
+   * ===== SALDO DE CAJERO =====
+   */
+
+  /**
+   * Obtener saldo del cajero autenticado
+   */
+  async getSaldo(token) {
+    const url = `${this.baseURL}/api/cajeros/mi-saldo`;
+    return this.authenticatedRequest(url, token, {
+      method: "GET",
+    });
+  }
+
+  /**
+   * Obtener historial de cambios de saldo del cajero autenticado
+   * @param {string} token - Token de autenticación
+   * @param {Object} filtros - Filtros opcionales (tipo, fechaInicio, fechaFin, limit, skip)
+   * @returns {Promise<Response>} - Respuesta de la API
+   */
+  async getHistorialSaldo(token, filtros = {}) {
+    let url = `${this.baseURL}/api/cajeros/mi-historial-saldo?`;
+    
+    const params = new URLSearchParams();
+    if (filtros.tipo) params.append("tipo", filtros.tipo);
+    if (filtros.fechaInicio) params.append("fechaInicio", filtros.fechaInicio);
+    if (filtros.fechaFin) params.append("fechaFin", filtros.fechaFin);
+    if (filtros.limit) params.append("limit", filtros.limit);
+    if (filtros.skip) params.append("skip", filtros.skip);
+
+    url += params.toString();
+
+    return this.authenticatedRequest(url, token, {
+      method: "GET",
+    });
+  }
 }
 
 // Crear instancia única del gestor de API

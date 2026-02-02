@@ -65,25 +65,61 @@ body {
   font-size: 14px;
 }
 
-/* Header con menú */
-.header-with-menu {
+/* Header */
+.header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  text-align: right;
-  flex-direction: row-reverse;
+  text-align: center;
 }
 
-.header-with-menu .header-content {
+.header .header-content {
   flex: 1;
 }
 
-.header-with-menu .header-content h1 {
+.header .header-content h1 {
   font-size: 24px;
   margin-bottom: 4px;
 }
 
-/* Botón de menú hamburguesa */
+/* Botón flotante de menú (similar al de notificaciones) */
+.menu-float-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--patio-rojo-ladrillo),
+    var(--patio-rojo-ladrillo-oscuro)
+  );
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-float-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.menu-float-btn:active {
+  transform: scale(0.95);
+}
+
+.menu-float-btn .menu-icon {
+  font-size: 28px;
+}
+
+/* Mantener compatibilidad con botones de menú en otras pantallas */
 .menu-toggle-btn {
   width: 48px;
   height: 48px;

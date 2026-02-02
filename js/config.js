@@ -33,6 +33,33 @@ export const TRANSACTION_CONFIG = {
   LOCALE: "es-VE",
 };
 
+/**
+ * Formatear monto en formato venezolano (coma para decimales, punto para miles)
+ * @param {number} monto - Monto en centavos
+ * @returns {string} - Monto formateado en Bs
+ */
+export function formatearMontoVenezolano(monto) {
+  if (monto === null || monto === undefined) return "0,00";
+  const montoBs = monto / TRANSACTION_CONFIG.AMOUNT_DIVISOR;
+  return montoBs.toLocaleString("es-VE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+/**
+ * Formatear monto en formato venezolano desde bolívares (no centavos)
+ * @param {number} montoBs - Monto en bolívares
+ * @returns {string} - Monto formateado en Bs
+ */
+export function formatearMontoBsVenezolano(montoBs) {
+  if (montoBs === null || montoBs === undefined) return "0,00";
+  return montoBs.toLocaleString("es-VE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 // Mensajes de la aplicación
 export const MESSAGES = {
   ERROR: {
@@ -104,6 +131,7 @@ export const DOM_SELECTORS = {
   LOGIN_SCREEN: "#login-screen",
   DASHBOARD_SCREEN: "#dashboard-screen",
   HISTORIAL_SCREEN: "#historial-screen",
+  SALDO_SCREEN: "#saldo-screen",
   PERFIL_SCREEN: "#perfil-screen",
   NOTIFICATIONS_SCREEN: "#notifications-screen",
 

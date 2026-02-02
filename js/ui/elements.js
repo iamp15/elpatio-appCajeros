@@ -139,6 +139,11 @@ export class ElementsManager {
     this.elements.filterFechaFin = document.querySelector(
       DOM_SELECTORS.FILTER_FECHA_FIN
     );
+
+    // Saldo
+    this.elements.saldoScreen = document.querySelector(
+      DOM_SELECTORS.SALDO_SCREEN
+    );
   }
 
   /**

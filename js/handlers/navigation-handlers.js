@@ -6,6 +6,7 @@ import { UI } from "../ui.js";
 import { HistoryManager } from "../history.js";
 import { TransactionManager } from "../transactions.js";
 import { Auth } from "../auth.js";
+import { saldoManager } from "../saldo.js";
 
 /**
  * Crear handlers de navegación
@@ -43,6 +44,16 @@ export function createNavigationHandlers(app) {
         case "historial":
           // Mostrar estado inicial del historial
           HistoryManager.showInitialState();
+          break;
+        case "saldo":
+          // Cargar saldo actual y mostrar estado inicial del historial
+          if (Auth.isAuthenticated()) {
+            const token = Auth.getToken();
+            // Mostrar spinner inicialmente (siempre, para indicar que se está cargando)
+            saldoManager.mostrarCargaSaldo(true);
+            saldoManager.cargarSaldoActual(token);
+            saldoManager.showInitialState();
+          }
           break;
         case "perfil":
           // Actualizar estado de conexión

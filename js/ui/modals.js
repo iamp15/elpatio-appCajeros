@@ -28,13 +28,13 @@ export class ModalsManager {
 
     document.body.appendChild(overlay);
 
-    // Configurar evento de cierre
-    const closeBtn = overlay.querySelector(".close-btn");
-    if (closeBtn) {
+    // Configurar evento de cierre para todos los botones close-btn
+    const closeBtns = overlay.querySelectorAll(".close-btn");
+    closeBtns.forEach((closeBtn) => {
       closeBtn.addEventListener("click", () =>
         this.closeTransactionDetailsModal()
       );
-    }
+    });
 
     // Configurar botones de confirmar y rechazar pago
     const confirmBtn = overlay.querySelector(".confirm-payment-btn");

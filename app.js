@@ -16,6 +16,7 @@ import { createAuthHandlers } from "./js/handlers/auth-handlers.js";
 import { createTransactionHandlers } from "./js/handlers/transaction-handlers.js";
 import { createHistoryHandlers } from "./js/handlers/history-handlers.js";
 import { createNavigationHandlers } from "./js/handlers/navigation-handlers.js";
+import { createSaldoHandlers } from "./js/handlers/saldo-handlers.js";
 
 // Importar servicios
 import { NotificationsService } from "./js/services/notifications-service.js";
@@ -41,6 +42,7 @@ class CajerosApp {
     this.transactionHandlers = createTransactionHandlers(this);
     this.historyHandlers = createHistoryHandlers(this);
     this.navigationHandlers = createNavigationHandlers(this);
+    this.saldoHandlers = createSaldoHandlers(this);
   }
 
   /**
@@ -79,6 +81,10 @@ class CajerosApp {
         onApplyHistoryFilters: this.historyHandlers.handleApplyHistoryFilters.bind(this.historyHandlers),
         onClearHistoryFilters: this.historyHandlers.handleClearHistoryFilters.bind(this.historyHandlers),
         onLoadMoreHistory: this.historyHandlers.handleLoadMoreHistory.bind(this.historyHandlers),
+        onRefreshSaldo: this.saldoHandlers.handleRefreshSaldo.bind(this.saldoHandlers),
+        onApplySaldoFilters: this.saldoHandlers.handleApplySaldoFilters.bind(this.saldoHandlers),
+        onClearSaldoFilters: this.saldoHandlers.handleClearSaldoFilters.bind(this.saldoHandlers),
+        onLoadMoreSaldo: this.saldoHandlers.handleLoadMoreSaldo.bind(this.saldoHandlers),
       });
 
       // Inicializar autenticación

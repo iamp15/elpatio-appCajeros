@@ -7,12 +7,17 @@
   background: var(--tg-theme-bg-color, #ffffff);
   border-radius: 16px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  height: auto;
 }
 
 .modal-rechazo-deposito .modal-header.error {
   background: linear-gradient(135deg, #f44336, #d32f2f);
   color: white;
   border-bottom: none;
+  flex-shrink: 0;
 }
 
 .modal-rechazo-deposito .modal-header.error .close-btn {
@@ -28,6 +33,10 @@
 .modal-rechazo-deposito .modal-content {
   padding: 20px 24px;
   background: var(--tg-theme-bg-color, #ffffff);
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: calc(90vh - 200px); /* Altura máxima menos header y actions */
 }
 
 .modal-rechazo-deposito .form-group {
@@ -202,7 +211,7 @@
 
 .imagen-preview {
   width: 100%;
-  max-height: 300px;
+  max-height: 250px;
   object-fit: contain;
   border-radius: 6px;
   display: block;
@@ -251,4 +260,51 @@
   font-size: 12px;
   color: var(--patio-gris-piedra);
   font-style: italic;
+}
+
+/* Modal actions para modal de rechazo */
+.modal-rechazo-deposito .modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  background: var(--tg-theme-bg-color, #ffffff);
+}
+
+/* Botones del modal de rechazo - tamaño reducido y estilos personalizados */
+.modal-rechazo-deposito .modal-actions .btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  min-width: 100px;
+  max-width: 150px;
+  width: auto;
+}
+
+/* Botón cancelar - estilo sobrio (similar a btn-primary) */
+.modal-rechazo-deposito .modal-actions .btn-secondary {
+  background: var(--patio-verde-pasto);
+  color: white;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  border: none;
+}
+
+.modal-rechazo-deposito .modal-actions .btn-secondary:hover:not(:disabled) {
+  background: var(--patio-verde-pasto-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+/* Botón confirmar rechazo - rojo ladrillo con letras blancas */
+.modal-rechazo-deposito .modal-actions .btn-danger {
+  background: var(--patio-rojo-ladrillo);
+  color: white;
+  box-shadow: 0 2px 8px rgba(229, 115, 115, 0.3);
+  border: none;
+}
+
+.modal-rechazo-deposito .modal-actions .btn-danger:hover:not(:disabled) {
+  background: var(--patio-rojo-ladrillo-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 115, 115, 0.4);
 }

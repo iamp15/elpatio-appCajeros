@@ -59,14 +59,11 @@
       <!-- Dashboard de Transacciones -->
       <div id="dashboard-screen" class="screen">
         <div class="container">
-          <div class="header header-with-menu">
+          <div class="header">
             <div class="header-content">
               <h1>🏦 Portal de Cajeros</h1>
               <p>Bienvenido, <span id="cajero-name">-</span></p>
             </div>
-            <button id="menu-toggle-btn" class="menu-toggle-btn" title="Menú">
-              <span class="menu-icon">☰</span>
-            </button>
           </div>
 
           <div class="dashboard-content">
@@ -202,6 +199,15 @@
           </div>
         </div>
 
+        <!-- Botón flotante de menú -->
+        <button
+          id="menu-toggle-btn"
+          class="menu-float-btn menu-toggle-btn"
+          title="Menú"
+        >
+          <span class="menu-icon">☰</span>
+        </button>
+
         <!-- Botón flotante de notificaciones -->
         <button
           id="notifications-btn"
@@ -243,6 +249,12 @@
             <button class="sidebar-nav-item" data-screen="historial">
               <span class="nav-icon">📜</span>
               <span class="nav-text">Historial</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-nav-item" data-screen="saldo">
+              <span class="nav-icon">💰</span>
+              <span class="nav-text">Saldo</span>
             </button>
           </li>
           <li>
@@ -337,7 +349,6 @@
               ← Volver
             </button>
             <h1>🔔 Notificaciones</h1>
-            <p>Historial de eventos recientes</p>
           </div>
 
           <div class="notifications-content">
@@ -472,6 +483,136 @@
               <div class="no-data-icon">📭</div>
               <h4>No hay transacciones</h4>
               <p>No se encontraron transacciones con los filtros aplicados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pantalla de Saldo -->
+      <div id="saldo-screen" class="screen">
+        <div class="container">
+          <div class="header header-with-menu">
+            <div class="header-content">
+              <h1>💰 Saldo</h1>
+              <p>Gestión de saldo del cajero</p>
+            </div>
+            <button class="menu-toggle-btn" title="Menú">
+              <span class="menu-icon">☰</span>
+            </button>
+          </div>
+
+          <div class="saldo-content">
+            <!-- Sección de saldo actual -->
+            <div class="saldo-current-section">
+              <div class="saldo-card">
+                <div class="saldo-label">Saldo Actual</div>
+                <div class="saldo-amount-container" id="saldo-amount-container">
+                  <div class="saldo-loading" id="saldo-loading">
+                    <div class="spinner"></div>
+                  </div>
+                  <div class="saldo-amount" id="saldo-amount" style="display: none;">0,00 Bs</div>
+                </div>
+                <button id="refresh-saldo-btn" class="btn btn-small btn-refresh">
+                  🔄 Actualizar
+                </button>
+              </div>
+            </div>
+
+            <!-- Sección de historial -->
+            <div class="saldo-history-section">
+              <div class="section-header">
+                <h3>📜 Historial de Cambios</h3>
+              </div>
+
+              <!-- Filtros -->
+              <div class="filters-section">
+                <div class="filters-grid">
+                  <div class="filter-group">
+                    <label for="saldo-filter-tipo">Tipo:</label>
+                    <select id="saldo-filter-tipo" class="filter-select">
+                      <option value="">Todos los tipos</option>
+                      <option value="deposito">Depósito</option>
+                      <option value="retiro">Retiro</option>
+                      <option value="ajuste_manual">Ajuste Manual</option>
+                    </select>
+                  </div>
+                  <div class="filter-group">
+                    <label for="saldo-filter-fecha-inicio">Fecha Inicio:</label>
+                    <input type="date" id="saldo-filter-fecha-inicio" class="filter-input" />
+                  </div>
+                  <div class="filter-group">
+                    <label for="saldo-filter-fecha-fin">Fecha Fin:</label>
+                    <input type="date" id="saldo-filter-fecha-fin" class="filter-input" />
+                  </div>
+                </div>
+                <div class="filters-actions">
+                  <button id="saldo-apply-filters-btn" class="btn btn-primary">
+                    🔍 Buscar
+                  </button>
+                  <button id="saldo-clear-filters-btn" class="btn btn-secondary">
+                    🗑️ Limpiar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Estado inicial -->
+              <div id="saldo-history-initial-state" class="history-initial-state">
+                <div class="initial-state-icon">📜</div>
+                <h4>Historial de Saldo</h4>
+                <p>Presiona "Buscar" para ver el historial de cambios en tu saldo.</p>
+              </div>
+
+              <!-- Estado de carga -->
+              <div
+                id="loading-saldo-history"
+                class="loading-state"
+                style="display: none"
+              >
+                <div class="spinner"></div>
+                <p>Cargando historial...</p>
+              </div>
+
+              <!-- Contador de resultados -->
+              <div id="saldo-history-count" class="history-count" style="display: none">
+                Mostrando <span id="saldo-history-showing">0</span> de <span id="saldo-history-total">0</span> registros
+              </div>
+
+              <!-- Tabla de historial -->
+              <div class="saldo-history-table-container">
+                <table class="saldo-history-table" id="saldo-history-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Tipo</th>
+                      <th>Monto</th>
+                      <th>Saldo Anterior</th>
+                      <th>Saldo Nuevo</th>
+                      <th>Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody id="saldo-history-tbody">
+                    <!-- Los registros se cargarán dinámicamente aquí -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Botón Cargar más -->
+              <div id="saldo-load-more-container" class="load-more-container" style="display: none">
+                <button id="saldo-load-more-btn" class="btn btn-secondary btn-load-more">
+                  📥 Cargar más registros
+                </button>
+              </div>
+
+              <!-- Mensaje cuando no hay resultados -->
+              <div
+                id="no-saldo-history"
+                class="no-transactions"
+                style="display: none"
+              >
+                <div class="no-data-icon">📭</div>
+                <h4>No hay registros</h4>
+                <p>No se encontraron cambios de saldo con los filtros aplicados.</p>
+              </div>
             </div>
           </div>
         </div>

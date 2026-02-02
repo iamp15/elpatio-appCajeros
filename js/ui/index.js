@@ -83,6 +83,28 @@ class UIManager {
     // Event listeners para historial
     this.historyUI.setupHistoryEventListeners(eventHandlers);
 
+    // Event listeners para saldo
+    const refreshSaldoBtn = document.querySelector("#refresh-saldo-btn");
+    const applySaldoFiltersBtn = document.querySelector("#saldo-apply-filters-btn");
+    const clearSaldoFiltersBtn = document.querySelector("#saldo-clear-filters-btn");
+    const loadMoreSaldoBtn = document.querySelector("#saldo-load-more-btn");
+
+    if (refreshSaldoBtn && eventHandlers.onRefreshSaldo) {
+      refreshSaldoBtn.addEventListener("click", eventHandlers.onRefreshSaldo);
+    }
+
+    if (applySaldoFiltersBtn && eventHandlers.onApplySaldoFilters) {
+      applySaldoFiltersBtn.addEventListener("click", eventHandlers.onApplySaldoFilters);
+    }
+
+    if (clearSaldoFiltersBtn && eventHandlers.onClearSaldoFilters) {
+      clearSaldoFiltersBtn.addEventListener("click", eventHandlers.onClearSaldoFilters);
+    }
+
+    if (loadMoreSaldoBtn && eventHandlers.onLoadMoreSaldo) {
+      loadMoreSaldoBtn.addEventListener("click", eventHandlers.onLoadMoreSaldo);
+    }
+
     // Event listeners para menú lateral
     this.sidebar.setupEventListeners(eventHandlers);
   }
