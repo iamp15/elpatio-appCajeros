@@ -187,6 +187,12 @@ class CajeroWebSocket {
       }
     });
 
+    this.socket.on("nueva-solicitud-retiro", (data) => {
+      if (this.callbacks.onNuevaSolicitudDeposito) {
+        this.callbacks.onNuevaSolicitudDeposito(data);
+      }
+    });
+
     this.socket.on("verificar-pago", (data) => {
       // Filtrar por target: solo procesar si es para cajero
       if (data.target === "cajero" && this.callbacks.onVerificarPago) {
@@ -209,6 +215,23 @@ class CajeroWebSocket {
         }
         if (this.callbacks.onDepositoCompletado) {
           this.callbacks.onDepositoCompletado(data);
+        }
+      }
+    });
+
+    this.socket.on("retiro-completado", (data) => {
+      if (data.target === "cajero") {
+        if (data.transaccionId) {
+          this.clearProcessingTransaction(data.transaccionId);
+          this.completedTransactions.add(data.transaccionId);
+          setTimeout(() => {
+            this.completedTransactions.delete(data.transaccionId);
+          }, 5 * 60 * 1000);
+        }
+        if (this.callbacks.onRetiroCompletado) {
+          this.callbacks.onRetiroCompletado(data);
+        } else if (this.callbacks.onDepositoCompletado) {
+          this.callbacks.onDepositoCompletado({ ...data, categoria: "retiro" });
         }
       }
     });
@@ -476,8 +499,9 @@ class CajeroWebSocket {
 
   /**
    * Confirmar pago (verificación de pago)
+   * Para retiros: pasar objeto con comprobanteUrl, numeroReferencia, bancoOrigen, notas
    */
-  confirmarPagoCajero(transaccionId, notas = null) {
+  confirmarPagoCajero(transaccionId, notasOrData = null) {
     // PROTECCIÓN 1: Verificar si ya se está procesando esta transacción
     if (this.processingTransactions.has(transaccionId)) {
       console.warn(
@@ -506,21 +530,28 @@ class CajeroWebSocket {
     // Generar ID único para este intento de envío
     const requestId = `${transaccionId}-${Date.now()}`;
 
-    console.log("✅ [WebSocket] Enviando evento verificar-pago-cajero:", {
-      transaccionId,
-      accion: "confirmar",
-      notas,
-      requestId,
-    });
+    const payload =
+      typeof notasOrData === "object" && notasOrData !== null
+        ? {
+            transaccionId,
+            accion: "confirmar",
+            notas: notasOrData.notas || null,
+            comprobanteUrl: notasOrData.comprobanteUrl || null,
+            numeroReferencia: notasOrData.numeroReferencia || null,
+            bancoOrigen: notasOrData.bancoOrigen || null,
+            requestId,
+          }
+        : {
+            transaccionId,
+            accion: "confirmar",
+            notas: notasOrData,
+            requestId,
+          };
+
+    console.log("✅ [WebSocket] Enviando evento verificar-pago-cajero:", payload);
 
     // Usar volatile.emit para evitar reintentos automáticos de Socket.IO
-    // Esto previene que Socket.IO reenvíe el evento si no recibe ACK
-    this.socket.volatile.emit("verificar-pago-cajero", {
-      transaccionId,
-      accion: "confirmar",
-      notas,
-      requestId, // ID único para rastrear duplicados en el backend
-    });
+    this.socket.volatile.emit("verificar-pago-cajero", payload);
 
     return true;
   }

@@ -273,6 +273,16 @@ class TransactionManager {
           </button>
         `;
       case "en_proceso":
+        if (transaccion.categoria === "retiro") {
+          return `
+          <button class="btn-action btn-confirm" onclick="reportarTransferenciaRetiro('${transaccion._id}')">
+            💸 Reportar Transferencia
+          </button>
+          <button class="btn-action btn-view" onclick="viewTransactionDetails('${transaccion._id}')">
+            👁️ Ver Detalles
+          </button>
+        `;
+        }
         return `
           <button class="btn-action btn-view" onclick="viewTransactionDetails('${transaccion._id}')">
             👁️ Ver Detalles
@@ -472,35 +482,39 @@ class TransactionManager {
           </div>
           
           <div class="payment-info">
-            <h3>📱 Información de Pago Móvil</h3>
+            <h3>${transaccion.categoria === "retiro" ? "📤 Datos donde enviar (jugador)" : "📱 Información de Pago Móvil"}</h3>
             <div class="payment-details">
               <div class="payment-item">
                 <strong>Banco:</strong> ${
-                  window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.banco ||
-                  "N/A"
+                  transaccion.categoria === "retiro"
+                    ? transaccion.infoPago?.bancoDestino || "N/A"
+                    : window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.banco || "N/A"
                 }
               </div>
               <div class="payment-item">
                 <strong>Cédula:</strong> ${
-                  window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.cedula
-                    ?.prefijo || ""
-                }-${
-      window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.cedula?.numero ||
-      "N/A"
-    }
+                  transaccion.categoria === "retiro"
+                    ? transaccion.infoPago?.cedulaOrigen || "N/A"
+                    : (window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.cedula?.prefijo || "") +
+                      "-" +
+                      (window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.cedula?.numero || "N/A")
+                }
               </div>
               <div class="payment-item">
                 <strong>Teléfono:</strong> ${
-                  window.CajerosApp?.getCajeroInfo()?.datosPagoMovil
-                    ?.telefono || "N/A"
+                  transaccion.categoria === "retiro"
+                    ? transaccion.infoPago?.telefonoOrigen || "N/A"
+                    : window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.telefono || "N/A"
                 }
               </div>
             </div>
           </div>
           
           <div class="status-message">
-            <p>🔄 <strong>Estado:</strong> Esperando pago del jugador</p>
-            <p>Los datos bancarios han sido enviados al jugador. Recibirás una notificación cuando realice el pago.</p>
+            ${transaccion.categoria === "retiro"
+              ? '<p>🔄 <strong>Estado:</strong> Envía el dinero al jugador y haz clic en "Reportar Transferencia" para confirmar.</p>'
+              : '<p>🔄 <strong>Estado:</strong> Esperando pago del jugador</p><p>Los datos bancarios han sido enviados al jugador. Recibirás una notificación cuando realice el pago.</p>'
+            }
           </div>
         </div>
         

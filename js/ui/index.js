@@ -272,6 +272,10 @@ class UIManager {
     this.paymentModals.showDepositoRechazadoPopup(data);
   }
 
+  showReportarTransferenciaRetiroPopup(transaccion) {
+    this.paymentModals.showReportarTransferenciaRetiroPopup(transaccion);
+  }
+
   // ===== MÉTODOS DE RECHAZO =====
 
   referirAAdmin(transaccionId, descripcion) {

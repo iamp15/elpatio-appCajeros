@@ -59,6 +59,28 @@ export function setupGlobalFunctions(app) {
   };
 
   /**
+   * Reportar transferencia (para retiros)
+   */
+  window.reportarTransferenciaRetiro = async (transaccionId) => {
+    const token = app.getToken();
+    if (!token || !window.transactionManager) return;
+
+    try {
+      const { API } = await import("../api.js");
+      const response = await API.getTransaccionDetalle(transaccionId, token);
+
+      if (response.ok) {
+        const result = await response.json();
+        app.getUI().showReportarTransferenciaRetiroPopup(result.transaccion);
+      } else {
+        console.error("Error obteniendo transacción:", response.status);
+      }
+    } catch (error) {
+      console.error("Error en reportarTransferenciaRetiro:", error);
+    }
+  };
+
+  /**
    * Verificar pago
    */
   window.verifyPayment = async (transaccionId) => {
