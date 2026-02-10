@@ -127,6 +127,39 @@ export function createTransactionHandlers(app) {
     },
 
     /**
+     * Manejar retiro completado
+     */
+    handleRetiroCompletado(data) {
+      try {
+        const transaccionId = data.transaccionId;
+
+        UI.closeTransactionDetailsModal();
+        UI.processingPayment = null;
+
+        if (transaccionId) {
+          UI.setPaymentButtonsDisabled(transaccionId, false);
+        }
+
+        UI.showDepositoCompletadoPopup({ ...data, categoria: "retiro" });
+
+        if (window.notificationManager) {
+          window.notificationManager.success(
+            "Retiro completado",
+            "La transacción de retiro se completó exitosamente"
+          );
+        }
+
+        app.loadTransactions();
+      } catch (error) {
+        console.error("Error manejando retiro completado:", error);
+        UI.processingPayment = null;
+        if (data?.transaccionId) {
+          app.loadTransactions();
+        }
+      }
+    },
+
+    /**
      * Manejar depósito rechazado
      */
     handleDepositoRechazado(data) {

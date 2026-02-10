@@ -153,6 +153,10 @@ class CajerosApp {
     return this.transactionHandlers.handleDepositoCompletado(data);
   }
 
+  handleRetiroCompletado(data) {
+    return this.transactionHandlers.handleRetiroCompletado(data);
+  }
+
   handleDepositoRechazado(data) {
     return this.transactionHandlers.handleDepositoRechazado(data);
   }

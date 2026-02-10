@@ -11,10 +11,12 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .transaction-details-modal {
@@ -187,4 +189,66 @@
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+}
+
+/* Modal Reportar Transferencia - scroll en contenido, header y acciones fijos */
+.reportar-transferencia-modal .modal-header {
+  flex-shrink: 0;
+}
+
+.reportar-transferencia-modal .modal-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.reportar-transferencia-modal .modal-actions {
+  flex-shrink: 0;
+}
+
+/* Formulario Reportar Transferencia */
+.reportar-transferencia-modal .reportar-transferencia-form .form-group {
+  margin-bottom: 20px;
+}
+
+.reportar-transferencia-modal .reportar-transferencia-form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--tg-theme-text-color, #333);
+  font-size: 14px;
+}
+
+.reportar-transferencia-modal .reportar-transferencia-form input,
+.reportar-transferencia-modal .reportar-transferencia-form select,
+.reportar-transferencia-modal .reportar-transferencia-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 16px;
+  background: var(--tg-theme-bg-color, #fff);
+  color: var(--tg-theme-text-color, #333);
+  transition: border-color 0.2s ease;
+}
+
+.reportar-transferencia-modal .reportar-transferencia-form input:focus,
+.reportar-transferencia-modal .reportar-transferencia-form select:focus,
+.reportar-transferencia-modal .reportar-transferencia-form textarea:focus {
+  outline: none;
+  border-color: var(--patio-verde-pasto, #4caf50);
+}
+
+.reportar-transferencia-modal .reportar-transferencia-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.reportar-transferencia-modal .reportar-transferencia-form textarea {
+  resize: vertical;
+  min-height: 60px;
 }

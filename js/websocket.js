@@ -24,6 +24,7 @@ class CajeroWebSocket {
       onNuevaSolicitudDeposito: null,
       onVerificarPago: null,
       onDepositoCompletado: null,
+      onRetiroCompletado: null,
       onDepositoRechazado: null,
       onTransaccionCanceladaPorJugador: null,
       onTransaccionCanceladaPorTimeout: null,
@@ -228,10 +229,11 @@ class CajeroWebSocket {
             this.completedTransactions.delete(data.transaccionId);
           }, 5 * 60 * 1000);
         }
+        const dataConCategoria = { ...data, categoria: "retiro" };
         if (this.callbacks.onRetiroCompletado) {
-          this.callbacks.onRetiroCompletado(data);
+          this.callbacks.onRetiroCompletado(dataConCategoria);
         } else if (this.callbacks.onDepositoCompletado) {
-          this.callbacks.onDepositoCompletado({ ...data, categoria: "retiro" });
+          this.callbacks.onDepositoCompletado(dataConCategoria);
         }
       }
     });

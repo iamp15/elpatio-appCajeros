@@ -519,7 +519,11 @@ class TransactionManager {
         </div>
         
         <div class="modal-actions">
-          <button onclick="refreshTransactions(); closeTransactionDetails();" class="btn btn-primary">Cerrar</button>
+          ${transaccion.categoria === "retiro"
+            ? `<button onclick="reportarTransferenciaRetiro('${transaccion._id}')" class="btn btn-primary">💸 Reportar Transferencia</button>
+               <button onclick="refreshTransactions(); closeTransactionDetails();" class="btn btn-secondary">Cerrar</button>`
+            : `<button onclick="refreshTransactions(); closeTransactionDetails();" class="btn btn-primary">Cerrar</button>`
+          }
         </div>
       </div>
     `;

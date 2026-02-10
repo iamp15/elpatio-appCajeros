@@ -40,6 +40,11 @@ export function setupWebSocketHandlers(app) {
     app.handleDepositoCompletado(data);
   });
 
+  window.cajeroWebSocket.on("onRetiroCompletado", (data) => {
+    console.log("✅ Retiro completado recibido");
+    app.handleRetiroCompletado(data);
+  });
+
   window.cajeroWebSocket.on("onDepositoRechazado", (data) => {
     console.log("❌ Depósito rechazado recibido");
     app.handleDepositoRechazado(data);

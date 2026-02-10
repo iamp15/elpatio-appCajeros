@@ -3,7 +3,7 @@
  */
 
 import { ModalsManager } from "./modals.js";
-import { formatearMontoVenezolano } from "../config.js";
+import { formatearMontoVenezolano, API_CONFIG } from "../config.js";
 
 /**
  * Clase para gestionar modales de resultado de pago
@@ -58,26 +58,14 @@ export class PaymentModalsManager extends ModalsManager {
    */
   showReportarTransferenciaRetiroPopup(transaccion) {
     const transaccionId = transaccion._id;
-    const montoBs = formatearMontoVenezolano(transaccion.monto);
-    const datosPago = transaccion.infoPago || {};
-    const bancoDestino = datosPago.bancoDestino || "N/A";
-    const telefonoDestino = datosPago.telefonoOrigen || "N/A";
-    const cedulaDestino = datosPago.cedulaOrigen || "N/A";
 
     const modalHTML = `
-      <div class="reportar-transferencia-modal">
+      <div class="transaction-details-modal reportar-transferencia-modal">
         <div class="modal-header">
           <h2>💸 Reportar Transferencia</h2>
           <button class="close-btn">&times;</button>
         </div>
         <div class="modal-content">
-          <div class="transaction-info-retiro">
-            <h4>Datos donde enviar (jugador):</h4>
-            <div class="info-row"><span class="label">Banco:</span><span>${bancoDestino}</span></div>
-            <div class="info-row"><span class="label">Teléfono:</span><span>${telefonoDestino}</span></div>
-            <div class="info-row"><span class="label">Cédula:</span><span>${cedulaDestino}</span></div>
-            <div class="info-row"><span class="label">Monto:</span><span class="amount">${montoBs} Bs</span></div>
-          </div>
           <form id="form-reportar-transferencia" class="reportar-transferencia-form">
             <div class="form-group">
               <label for="transferencia-referencia">Número de referencia *</label>
@@ -207,12 +195,7 @@ export class PaymentModalsManager extends ModalsManager {
       throw new Error("No hay token de autenticación. Inicia sesión nuevamente.");
     }
 
-    const backendUrl =
-      window.location.hostname === "localhost"
-        ? "http://localhost:3001"
-        : "https://elpatio-backend.fly.dev";
-
-    const response = await fetch(`${backendUrl}/api/upload/imagen-comprobante`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/api/upload/imagen-comprobante`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
