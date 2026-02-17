@@ -266,14 +266,12 @@ export class RejectionModalsManager extends ModalsManager {
   }
 
   /**
-   * Obtener URL del backend según el entorno
+   * Obtener URL del backend.
+   * Usa la misma URL que el resto de la app (API_CONFIG). La app de cajeros
+   * siempre debe hablar con el backend en Fly.io; en local no hay backend local.
    */
   getBackendUrl() {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return 'http://localhost:3001';
-    }
-    // En producción, usar la URL del backend
-    return 'https://elpatio-backend.fly.dev';
+    return window.API_CONFIG?.BASE_URL || 'https://elpatio-backend.fly.dev';
   }
 
   /**

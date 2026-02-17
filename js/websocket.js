@@ -58,15 +58,12 @@ class CajeroWebSocket {
     this.isAuthenticating = false;
 
     // Detectar URL del servidor
-    // Para desarrollo local con backend en Fly.io, usar siempre producción
-    // Cambiar USE_LOCAL_BACKEND a true solo si corres el backend localmente
-    const USE_LOCAL_BACKEND = false;
+    // Prioridad: variable inyectada por el servidor (desarrollo local) > detección por hostname
     const isLocalhost =
       window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1";
-    const socketUrl = isLocalhost && USE_LOCAL_BACKEND
-      ? "http://localhost:3001"
-      : "https://elpatio-backend.fly.dev";
+    const socketUrl = window.BACKEND_WS_URL ||
+      (isLocalhost ? "http://localhost:3001" : "https://elpatio-backend.fly.dev");
 
     console.log(`🔗 [WebSocket] Conectando a ${socketUrl}...`);
 
@@ -608,18 +605,18 @@ class CajeroWebSocket {
   /**
    * Ajustar monto de depósito
    */
-  ajustarMontoDeposito(transaccionId, montoReal, razon) {
+  ajustarMontoDeposito(transaccionId, montoReal, razon, imagenAjusteUrl = null) {
     if (!this.isConnected || !this.isAuthenticated) {
       console.error("No hay conexión o no está autenticado");
       return;
     }
-    
-    console.log("💰 Ajustando monto:", { transaccionId, montoReal, razon });
-    this.socket.emit("ajustar-monto-deposito", {
-      transaccionId,
-      montoReal,
-      razon,
-    });
+
+    const payload = { transaccionId, montoReal, razon };
+    if (imagenAjusteUrl) {
+      payload.imagenAjusteUrl = imagenAjusteUrl;
+    }
+    console.log("💰 Ajustando monto:", { transaccionId, montoReal, razon, imagenAjusteUrl: !!imagenAjusteUrl });
+    this.socket.emit("ajustar-monto-deposito", payload);
   }
 
   /**

@@ -155,9 +155,7 @@ class TransactionManager {
     if (referencia.length <= TRANSACTION_CONFIG.REFERENCE_DISPLAY_LENGTH) {
       return referencia;
     }
-    return (
-      "..." + referencia.slice(-TRANSACTION_CONFIG.REFERENCE_DISPLAY_LENGTH)
-    );
+    return referencia.slice(-TRANSACTION_CONFIG.REFERENCE_DISPLAY_LENGTH);
   }
 
   /**
@@ -171,6 +169,100 @@ class TransactionManager {
         maximumFractionDigits: 2,
       }
     );
+  }
+
+  /**
+   * Copiar texto al portapapeles
+   */
+  async copyToClipboard(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } else {
+        // Fallback para navegadores antiguos
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        return true;
+      }
+    } catch (err) {
+      console.error("Error al copiar al portapapeles:", err);
+      return false;
+    }
+  }
+
+  /**
+   * Mostrar notificación temporal de copia exitosa
+   */
+  showCopyNotification(button) {
+    const originalText = button.innerHTML;
+    button.innerHTML = "✓ Copiado";
+    button.classList.add("copied");
+    setTimeout(() => {
+      button.innerHTML = originalText;
+      button.classList.remove("copied");
+    }, 2000);
+  }
+
+  /**
+   * Copiar un dato específico de pago al portapapeles
+   */
+  async copyPaymentItem(transactionId, itemType) {
+    const elementId = `payment-${itemType}-${transactionId}`;
+    const element = document.getElementById(elementId);
+    if (!element) {
+      console.error(`Elemento no encontrado: ${elementId}`);
+      return;
+    }
+
+    const text = element.textContent.trim();
+    if (text === "N/A" || !text) {
+      return;
+    }
+
+    const success = await this.copyToClipboard(text);
+    if (success) {
+      // Buscar el botón que activó la copia
+      const button = document.querySelector(`button[onclick*="copyPaymentItem('${transactionId}', '${itemType}')"]`);
+      if (button) {
+        this.showCopyNotification(button);
+      }
+    }
+  }
+
+  /**
+   * Copiar todos los datos de pago al portapapeles
+   */
+  async copyAllPaymentData(transactionId) {
+    const bancoEl = document.getElementById(`payment-banco-${transactionId}`);
+    const cedulaEl = document.getElementById(`payment-cedula-${transactionId}`);
+    const telefonoEl = document.getElementById(`payment-telefono-${transactionId}`);
+
+    if (!bancoEl || !cedulaEl || !telefonoEl) {
+      console.error("Elementos de pago no encontrados");
+      return;
+    }
+
+    const banco = bancoEl.textContent.trim();
+    const cedula = cedulaEl.textContent.trim();
+    const telefono = telefonoEl.textContent.trim();
+
+    const allData = `Banco: ${banco}\nCédula: ${cedula}\nTeléfono: ${telefono}`;
+
+    const success = await this.copyToClipboard(allData);
+    if (success) {
+      // Buscar el botón "Copiar Todo"
+      const button = document.querySelector(`button[onclick*="copyAllPaymentData('${transactionId}')"]`);
+      if (button) {
+        this.showCopyNotification(button);
+      }
+    }
   }
 
   /**
@@ -214,9 +306,9 @@ class TransactionManager {
           transaccion.createdAt
         ).toLocaleString()}</p>
         ${
-          transaccion.referencia
+          transaccion._id
             ? `<p><strong>ID Transacción:</strong> ${this.formatReference(
-                transaccion.referencia
+                transaccion._id
               )}</p>`
             : ""
         }
@@ -457,7 +549,7 @@ class TransactionManager {
             <div class="detail-item">
               <strong>ID Transacción:</strong>
               <span>${this.formatReference(
-                transaccion.referencia || transaccion._id
+                transaccion._id
               )}</span>
             </div>
             
@@ -481,31 +573,54 @@ class TransactionManager {
             </div>
           </div>
           
-          <div class="payment-info">
-            <h3>${transaccion.categoria === "retiro" ? "📤 Datos donde enviar (jugador)" : "📱 Información de Pago Móvil"}</h3>
+          <div class="payment-info highlighted">
+            <div class="payment-header">
+              <h3>${transaccion.categoria === "retiro" ? "📤 Datos donde enviar (jugador)" : "📱 Información de Pago Móvil"}</h3>
+              <button class="btn-copy-all" onclick="window.transactionManager?.copyAllPaymentData('${transaccion._id}')" title="Copiar todos los datos">
+                📋 Copiar Todo
+              </button>
+            </div>
             <div class="payment-details">
               <div class="payment-item">
-                <strong>Banco:</strong> ${
+                <div class="payment-label-value">
+                  <strong>Banco:</strong>
+                  <span class="payment-value" id="payment-banco-${transaccion._id}">${
                   transaccion.categoria === "retiro"
                     ? transaccion.infoPago?.bancoDestino || "N/A"
                     : window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.banco || "N/A"
-                }
+                }</span>
+                </div>
+                <button class="btn-copy-item" onclick="window.transactionManager?.copyPaymentItem('${transaccion._id}', 'banco')" title="Copiar banco">
+                  📋
+                </button>
               </div>
               <div class="payment-item">
-                <strong>Cédula:</strong> ${
+                <div class="payment-label-value">
+                  <strong>Cédula:</strong>
+                  <span class="payment-value" id="payment-cedula-${transaccion._id}">${
                   transaccion.categoria === "retiro"
                     ? transaccion.infoPago?.cedulaOrigen || "N/A"
                     : (window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.cedula?.prefijo || "") +
                       "-" +
                       (window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.cedula?.numero || "N/A")
-                }
+                }</span>
+                </div>
+                <button class="btn-copy-item" onclick="window.transactionManager?.copyPaymentItem('${transaccion._id}', 'cedula')" title="Copiar cédula">
+                  📋
+                </button>
               </div>
               <div class="payment-item">
-                <strong>Teléfono:</strong> ${
+                <div class="payment-label-value">
+                  <strong>Teléfono:</strong>
+                  <span class="payment-value" id="payment-telefono-${transaccion._id}">${
                   transaccion.categoria === "retiro"
                     ? transaccion.infoPago?.telefonoOrigen || "N/A"
                     : window.CajerosApp?.getCajeroInfo()?.datosPagoMovil?.telefono || "N/A"
-                }
+                }</span>
+                </div>
+                <button class="btn-copy-item" onclick="window.transactionManager?.copyPaymentItem('${transaccion._id}', 'telefono')" title="Copiar teléfono">
+                  📋
+                </button>
               </div>
             </div>
           </div>

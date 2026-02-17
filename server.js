@@ -1,13 +1,14 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const fs = require("fs");
+require("dotenv").config({ path: path.join(__dirname, "..", ".env.local") });
 
 const app = express();
 const PORT = process.env.PORT || 3003; // Puerto específico para app de cajeros
 
 // Middleware
 app.use(cors());
-app.use(express.static(path.join(__dirname)));
 
 // Configurar headers para Telegram Web Apps
 app.use((req, res, next) => {
@@ -26,10 +27,45 @@ app.use((req, res, next) => {
   next();
 });
 
-// Ruta principal
+// Función para inyectar variables de configuración en HTML
+function injectConfigVariables(htmlContent) {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+  const backendApiUrl = process.env.BACKEND_API_URL || `${backendUrl}/api`;
+  const backendWsUrl = process.env.BACKEND_WS_URL || backendUrl;
+  
+  const configScript = `<script>
+    window.API_CONFIG = window.API_CONFIG || {};
+    window.API_CONFIG.BASE_URL = "${backendApiUrl}";
+    window.BACKEND_URL = "${backendUrl}";
+    window.BACKEND_WS_URL = "${backendWsUrl}";
+  </script>`;
+  
+  // Inyectar en el head antes del cierre de </head>
+  if (htmlContent.includes('</head>')) {
+    htmlContent = htmlContent.replace(
+      '</head>',
+      `  ${configScript}\n  </head>`
+    );
+  } else {
+    htmlContent = htmlContent.replace(
+      /(<script[^>]*>)/i,
+      `${configScript}\n    $1`
+    );
+  }
+  
+  return htmlContent;
+}
+
+// Ruta principal (ANTES de express.static para que se inyecten las variables)
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  const filePath = path.join(__dirname, "index.html");
+  let htmlContent = fs.readFileSync(filePath, "utf-8");
+  htmlContent = injectConfigVariables(htmlContent);
+  res.send(htmlContent);
 });
+
+// Middleware estático DESPUÉS de la ruta principal
+app.use(express.static(path.join(__dirname)));
 
 // Ruta de salud
 app.get("/health", (req, res) => {

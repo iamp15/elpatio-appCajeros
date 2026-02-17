@@ -194,6 +194,19 @@
   opacity: 0.7;
 }
 
+/* Mismo verde pasto que .btn-primary para acciones de confirmar/verificar */
+.btn-confirm {
+  background: var(--patio-verde-pasto);
+  color: white;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+}
+
+.btn-confirm:hover {
+  background: var(--patio-verde-pasto-oscuro);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
 .btn-loading {
   font-size: 12px;
 }

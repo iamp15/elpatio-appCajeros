@@ -22,4 +22,8 @@
   --patio-rojo-suave: rgba(229, 115, 115, 0.1);
   --patio-amarillo-suave: rgba(255, 193, 7, 0.1);
   --patio-azul-suave: rgba(33, 150, 243, 0.1);
+
+  /* Modales: ancho unificado en toda la app */
+  --modal-max-width: min(600px, 90vw);
+  --modal-width-pct: 90%;
 }

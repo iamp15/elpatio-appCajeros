@@ -211,9 +211,38 @@ export class PaymentModalsManager extends ModalsManager {
   }
 
   /**
+   * Formatear fecha para mostrar en el modal de rechazo
+   */
+  formatearFechaRechazo(timestamp) {
+    if (!timestamp) return "—";
+    try {
+      const d = new Date(timestamp);
+      return d.toLocaleDateString("es-VE", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return String(timestamp);
+    }
+  }
+
+  /**
    * Mostrar pop-up de depósito rechazado
    */
   showDepositoRechazadoPopup(data) {
+    const transaccionIdCorto =
+      data.transaccionId && data.transaccionId.length > 10
+        ? data.transaccionId.slice(-10)
+        : data.transaccionId || "";
+    const fechaRechazo = this.formatearFechaRechazo(data.timestamp);
+    const evidencia = data.imagenRechazoUrl ? "Sí" : "No";
+    const montoBs =
+      data.monto != null
+        ? (Number(data.monto) / 100).toFixed(2)
+        : null;
     const modalHTML = `
       <div class="deposito-rechazado-modal">
         <div class="modal-header error">
@@ -224,11 +253,27 @@ export class PaymentModalsManager extends ModalsManager {
           <div class="error-info">
             <div class="info-row">
               <span class="label">Transacción:</span>
-              <span class="value">${data.transaccionId}</span>
+              <span class="value">${transaccionIdCorto}</span>
             </div>
+            ${
+              montoBs
+                ? `<div class="info-row">
+              <span class="label">Monto:</span>
+              <span class="value">${formatearMontoVenezolano(Number(data.monto))} Bs</span>
+            </div>`
+                : ""
+            }
             <div class="info-row">
               <span class="label">Motivo:</span>
-              <span class="value reason">${data.motivo}</span>
+              <span class="value reason">${data.motivo || "—"}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Fecha:</span>
+              <span class="value">${fechaRechazo}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Evidencia adjunta:</span>
+              <span class="value">${evidencia}</span>
             </div>
           </div>
           <div class="error-message">

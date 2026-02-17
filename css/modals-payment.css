@@ -4,12 +4,21 @@
 
 /* Estilos para pop-up de depósito completado */
 .deposito-completado-modal {
+  position: relative;
   background: var(--tg-theme-bg-color, #ffffff);
   border-radius: 16px;
   overflow: hidden;
+  max-width: var(--modal-max-width);
+  width: var(--modal-width-pct);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .deposito-completado-modal .modal-header.success {
+  position: relative;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #4caf50, #388e3c);
   color: white;
   border-bottom: none;
@@ -26,26 +35,66 @@
 }
 
 .deposito-completado-modal .modal-content {
-  padding: 20px 24px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 28px;
   background: var(--tg-theme-bg-color, #ffffff);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.deposito-completado-modal .modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--tg-theme-bg-color, #ffffff);
+}
+
+.deposito-completado-modal .modal-actions .btn {
+  min-width: 120px;
+}
+
+/* El botón "Cerrar" del pie: forzar verde pasto ( .close-btn en modals.css pone background:none y anula .btn-primary ) */
+.deposito-completado-modal .modal-actions .close-btn,
+.deposito-completado-modal .modal-actions .btn-primary.close-btn {
+  position: static;
+  right: auto;
+  top: auto;
+  transform: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  background: var(--patio-verde-pasto) !important;
+  color: white !important;
+  border: none;
+}
+
+.deposito-completado-modal .modal-actions .close-btn:hover,
+.deposito-completado-modal .modal-actions .btn-primary.close-btn:hover {
+  background: var(--patio-verde-pasto-oscuro) !important;
+  color: white !important;
 }
 
 .deposito-completado-modal .success-info {
   background: #e8f5e8;
   border-radius: 8px;
-  padding: 16px;
-  margin: 16px 0;
+  padding: 24px 20px;
+  margin: 0;
 }
 
-.deposito-completado-modal .info-row {
+.deposito-completado-modal .success-info .info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 14px 0;
   border-bottom: 1px solid #c8e6c9;
 }
 
-.deposito-completado-modal .info-row:last-child {
+.deposito-completado-modal .success-info .info-row:last-child {
   border-bottom: none;
 }
 
@@ -69,8 +118,8 @@
 .deposito-completado-modal .success-message {
   background: #e8f5e8;
   border-left: 4px solid #4caf50;
-  padding: 12px;
-  margin: 16px 0;
+  padding: 20px 24px;
+  margin: 0;
   border-radius: 4px;
 }
 
@@ -86,15 +135,29 @@
 
 /* Estilos para pop-up de depósito rechazado */
 .deposito-rechazado-modal {
+  position: relative;
   background: var(--tg-theme-bg-color, #ffffff);
   border-radius: 16px;
   overflow: hidden;
+  max-width: var(--modal-max-width);
+  width: var(--modal-width-pct);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .deposito-rechazado-modal .modal-header.error {
+  position: relative;
+  flex-shrink: 0;
+  padding: 24px 28px;
   background: linear-gradient(135deg, #f44336, #d32f2f);
   color: white;
   border-bottom: none;
+}
+
+.deposito-rechazado-modal .modal-header.error h2 {
+  font-size: 22px;
 }
 
 .deposito-rechazado-modal .modal-header.error .close-btn {
@@ -108,22 +171,62 @@
 }
 
 .deposito-rechazado-modal .modal-content {
-  padding: 20px 24px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 28px 32px;
   background: var(--tg-theme-bg-color, #ffffff);
+}
+
+.deposito-rechazado-modal .modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 24px 32px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--tg-theme-bg-color, #ffffff);
+}
+
+.deposito-rechazado-modal .modal-actions .btn {
+  min-width: 120px;
+}
+
+/* El botón del pie (Entendido) no debe heredar position:absolute de .close-btn */
+.deposito-rechazado-modal .modal-actions .close-btn {
+  position: static;
+  right: auto;
+  top: auto;
+  transform: none;
+  font-size: 16px;
+  padding: 10px 20px;
+}
+
+/* Botón Entendido con verde pasto (paleta El Patio) */
+.deposito-rechazado-modal .modal-actions .btn-secondary {
+  background: var(--patio-verde-pasto);
+  color: white;
+  border: none;
+}
+
+.deposito-rechazado-modal .modal-actions .btn-secondary:hover {
+  background: var(--patio-verde-pasto-oscuro);
+  color: white;
 }
 
 .deposito-rechazado-modal .error-info {
   background: #ffebee;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 16px 0;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 20px 0;
 }
 
 .deposito-rechazado-modal .info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  gap: 20px;
+  padding: 12px 0;
   border-bottom: 1px solid #ffcdd2;
 }
 
@@ -150,9 +253,9 @@
 .deposito-rechazado-modal .error-message {
   background: #ffebee;
   border-left: 4px solid #f44336;
-  padding: 12px;
-  margin: 16px 0;
-  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
 }
 
 .deposito-rechazado-modal .error-message p {

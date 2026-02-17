@@ -9,8 +9,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  max-width: var(--modal-max-width, min(600px, 90vw));
+  width: var(--modal-width-pct, 90%);
+  min-width: min(380px, 88vw);
   max-height: 90vh;
   height: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
 }
 
 .modal-rechazo-deposito .modal-header.error {

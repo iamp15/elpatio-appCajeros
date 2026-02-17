@@ -229,9 +229,9 @@ class HistoryManager {
             : ""
         }
         ${
-          transaccion.referencia
+          transaccion._id
             ? `<p><strong>ID Transacción:</strong> ${this.formatReference(
-                transaccion.referencia
+                transaccion._id
               )}</p>`
             : ""
         }
@@ -289,9 +289,7 @@ class HistoryManager {
     if (referencia.length <= TRANSACTION_CONFIG.REFERENCE_DISPLAY_LENGTH) {
       return referencia;
     }
-    return (
-      "..." + referencia.slice(-TRANSACTION_CONFIG.REFERENCE_DISPLAY_LENGTH)
-    );
+    return referencia.slice(-TRANSACTION_CONFIG.REFERENCE_DISPLAY_LENGTH);
   }
 
   /**
@@ -387,6 +385,10 @@ class HistoryManager {
   renderAjusteMonto(ajusteMonto) {
     if (!ajusteMonto || !ajusteMonto.montoOriginal) return "";
 
+    const imagenHtml = ajusteMonto.imagenAjusteUrl
+      ? `<p><strong>Soporte:</strong> <a href="${ajusteMonto.imagenAjusteUrl}" target="_blank" rel="noopener noreferrer">Ver imagen</a></p>`
+      : "";
+
     return `
       <div class="adjustment-details-section">
         <p><strong>Ajuste de Monto:</strong></p>
@@ -399,6 +401,7 @@ class HistoryManager {
             ? `<p><strong>Razón:</strong> ${ajusteMonto.razon}</p>`
             : ""
         }
+        ${imagenHtml}
       </div>
     `;
   }

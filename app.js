@@ -85,6 +85,7 @@ class CajerosApp {
         onApplySaldoFilters: this.saldoHandlers.handleApplySaldoFilters.bind(this.saldoHandlers),
         onClearSaldoFilters: this.saldoHandlers.handleClearSaldoFilters.bind(this.saldoHandlers),
         onLoadMoreSaldo: this.saldoHandlers.handleLoadMoreSaldo.bind(this.saldoHandlers),
+        onSaldoTabChange: this.saldoHandlers.handleSaldoTabChange.bind(this.saldoHandlers),
       });
 
       // Inicializar autenticación

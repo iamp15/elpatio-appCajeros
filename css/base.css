@@ -136,6 +136,21 @@ body {
   margin-right: 16px;
 }
 
+/* Botón de menú en header-with-menu: siempre esquina superior izquierda del viewport */
+.header-with-menu .menu-toggle-btn {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  z-index: 1001;
+}
+
+/* Reservar espacio en el header para que el título no quede bajo el botón fijo */
+.header-with-menu {
+  padding-top: 56px;
+  position: relative;
+}
+
 .menu-toggle-btn:hover {
   background: var(--patio-verde-pasto-oscuro);
   transform: scale(1.05);

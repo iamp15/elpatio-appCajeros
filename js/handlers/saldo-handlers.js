@@ -48,6 +48,35 @@ export function createSaldoHandlers(app) {
       if (token) {
         await saldoManager.cargarMas(token);
       }
+    },
+
+    /**
+     * Manejar cambio de tab en la sección de saldo
+     */
+    handleSaldoTabChange(tabName) {
+      // Ocultar todos los contenidos de tabs
+      const tabContents = document.querySelectorAll(".saldo-tab-content");
+      tabContents.forEach((content) => {
+        content.style.display = "none";
+      });
+
+      // Remover clase active de todos los botones
+      const tabButtons = document.querySelectorAll("[data-saldo-tab]");
+      tabButtons.forEach((btn) => {
+        btn.classList.remove("active");
+      });
+
+      // Mostrar el contenido del tab seleccionado
+      const selectedContent = document.getElementById(`saldo-tab-${tabName}`);
+      if (selectedContent) {
+        selectedContent.style.display = "block";
+      }
+
+      // Agregar clase active al botón seleccionado
+      const selectedButton = document.querySelector(`[data-saldo-tab="${tabName}"]`);
+      if (selectedButton) {
+        selectedButton.classList.add("active");
+      }
     }
   };
 }

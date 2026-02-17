@@ -2,19 +2,19 @@
  * Animaciones compartidas
  */
 
-/* Animaciones */
+/* Animaciones: solo opacity para no crear nuevo containing block.
+   Si .screen usara transform, los botones con position:fixed (menú, notificaciones)
+   se posicionarían respecto a .screen y "saltarían" cuando termina la animación. */
 .screen {
-  animation: fadeIn 0.5s ease-in-out;
+  animation: fadeIn 0.4s ease-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 

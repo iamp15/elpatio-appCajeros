@@ -14,6 +14,7 @@ const SALDO_CONFIG = {
 class SaldoManager {
   constructor() {
     this.saldoActual = 0;
+    this.saldoComisiones = 0;
     this.historial = [];
     this.allHistorial = []; // Todos los registros sin paginar
     this.currentPage = 0;
@@ -71,6 +72,9 @@ class SaldoManager {
         this.saldoActual = data.saldo;
         this.saldoCargado = true;
       }
+      if (data.saldoComisiones !== undefined) {
+        this.saldoComisiones = data.saldoComisiones;
+      }
     } catch (error) {
       console.error("Error cargando saldo:", error);
       // En caso de error, mantener saldo en 0 pero marcar como cargado para mostrar
@@ -89,18 +93,13 @@ class SaldoManager {
   mostrarCargaSaldo(mostrar) {
     const loadingElement = document.getElementById("saldo-loading");
     const saldoElement = document.getElementById("saldo-amount");
+    const loadingComisiones = document.getElementById("saldo-comisiones-loading");
+    const saldoComisionesElement = document.getElementById("saldo-comisiones-amount");
 
-    if (loadingElement) {
-      loadingElement.style.display = mostrar ? "flex" : "none";
-    }
-
-    if (saldoElement) {
-      // Ocultar el saldo mientras se carga
-      if (mostrar) {
-        saldoElement.style.display = "none";
-      }
-      // El saldo se mostrará explícitamente en mostrarSaldoActual() cuando termine la carga
-    }
+    if (loadingElement) loadingElement.style.display = mostrar ? "flex" : "none";
+    if (loadingComisiones) loadingComisiones.style.display = mostrar ? "flex" : "none";
+    if (saldoElement && mostrar) saldoElement.style.display = "none";
+    if (saldoComisionesElement && mostrar) saldoComisionesElement.style.display = "none";
   }
 
   /**
@@ -109,16 +108,21 @@ class SaldoManager {
   mostrarSaldoActual() {
     const saldoElement = document.getElementById("saldo-amount");
     const loadingElement = document.getElementById("saldo-loading");
-    
+    const saldoComisionesElement = document.getElementById("saldo-comisiones-amount");
+    const loadingComisiones = document.getElementById("saldo-comisiones-loading");
+
     if (saldoElement) {
       saldoElement.textContent = `${this.formatearSaldo(this.saldoActual)} Bs`;
-      // Mostrar el saldo solo si ya se cargó
       if (this.saldoCargado) {
         saldoElement.style.display = "block";
-        // Asegurar que el spinner esté oculto
-        if (loadingElement) {
-          loadingElement.style.display = "none";
-        }
+        if (loadingElement) loadingElement.style.display = "none";
+      }
+    }
+    if (saldoComisionesElement) {
+      saldoComisionesElement.textContent = `${this.formatearSaldo(this.saldoComisiones)} Bs`;
+      if (this.saldoCargado) {
+        saldoComisionesElement.style.display = "block";
+        if (loadingComisiones) loadingComisiones.style.display = "none";
       }
     }
   }
@@ -293,6 +297,8 @@ class SaldoManager {
       deposito: "Depósito",
       retiro: "Retiro",
       ajuste_manual: "Ajuste Manual",
+      comision_deposito: "Comisión depósito",
+      comision_retiro: "Comisión retiro",
     };
     return tipos[tipo] || tipo;
   }

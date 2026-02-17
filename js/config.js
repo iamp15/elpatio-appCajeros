@@ -2,9 +2,17 @@
  * Configuración de la aplicación de cajeros
  */
 
+// Detectar si estamos en desarrollo local
+const isDevelopment = 
+  window.location.hostname === 'localhost' || 
+  window.location.hostname === '127.0.0.1' ||
+  window.location.hostname === '';
+
 // Configuración de la API
 export const API_CONFIG = {
-  BASE_URL: "https://elpatio-backend.fly.dev",
+  BASE_URL: isDevelopment 
+    ? "http://localhost:3001"
+    : "https://elpatio-backend.fly.dev",
   ENDPOINTS: {
     LOGIN: "/api/cajeros/login",
     PERFIL: "/api/cajeros/mi-perfil",
@@ -28,7 +36,7 @@ export const UI_CONFIG = {
 
 // Configuración de transacciones
 export const TRANSACTION_CONFIG = {
-  REFERENCE_DISPLAY_LENGTH: 6,
+  REFERENCE_DISPLAY_LENGTH: 10,
   AMOUNT_DIVISOR: 100, // Para convertir centavos a bolívares
   LOCALE: "es-VE",
 };

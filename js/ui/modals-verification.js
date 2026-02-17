@@ -290,6 +290,31 @@ export class VerificationModalsManager extends ModalsManager {
             ></textarea>
           </div>
 
+          <div class="form-group">
+            <label class="form-label">Imagen de soporte (opcional):</label>
+            <div class="file-upload-container">
+              <input 
+                type="file" 
+                id="imagen-ajuste-monto" 
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                class="file-input"
+              />
+              <label for="imagen-ajuste-monto" class="file-input-label">
+                <span class="file-input-icon">📷</span>
+                <span class="file-input-text">Seleccionar imagen (máx. 5MB)</span>
+              </label>
+              <div id="imagen-ajuste-preview-container" class="imagen-preview-container" style="display: none;">
+                <img id="imagen-ajuste-preview" class="imagen-preview" alt="Preview" />
+                <button type="button" id="btn-eliminar-imagen-ajuste" class="btn-eliminar-imagen">✕</button>
+                <div class="imagen-info">
+                  <span id="imagen-ajuste-nombre"></span>
+                  <span id="imagen-ajuste-tamaño"></span>
+                </div>
+              </div>
+            </div>
+            <small class="form-help-text">Formatos permitidos: JPG, PNG, WEBP, GIF. Tamaño máximo: 5MB</small>
+          </div>
+
           <div class="info-message">
             <p>ℹ️ El depósito se completará con el monto ajustado. El jugador recibirá este monto en su saldo.</p>
           </div>
@@ -304,27 +329,117 @@ export class VerificationModalsManager extends ModalsManager {
 
     this.showTransactionDetailsModal(modalHTML);
 
+    // Configurar event listeners para el input de imagen
+    const imagenAjusteInput = document.getElementById('imagen-ajuste-monto');
+    const imagenAjustePreview = document.getElementById('imagen-ajuste-preview');
+    const imagenAjustePreviewContainer = document.getElementById('imagen-ajuste-preview-container');
+    const imagenAjusteNombre = document.getElementById('imagen-ajuste-nombre');
+    const imagenAjusteTamaño = document.getElementById('imagen-ajuste-tamaño');
+    const btnEliminarImagenAjuste = document.getElementById('btn-eliminar-imagen-ajuste');
+
+    if (imagenAjusteInput) {
+      imagenAjusteInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const maxSize = 5 * 1024 * 1024;
+          if (file.size > maxSize) {
+            this.showAlert('La imagen no puede ser mayor a 5MB');
+            e.target.value = '';
+            return;
+          }
+          const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+          if (!tiposPermitidos.includes(file.type)) {
+            this.showAlert('Tipo de archivo no permitido. Solo se permiten imágenes (JPG, PNG, WEBP, GIF)');
+            e.target.value = '';
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            imagenAjustePreview.src = event.target.result;
+            imagenAjusteNombre.textContent = file.name;
+            imagenAjusteTamaño.textContent = this.formatearTamañoAjuste(file.size);
+            imagenAjustePreviewContainer.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    if (btnEliminarImagenAjuste) {
+      btnEliminarImagenAjuste.addEventListener('click', () => {
+        imagenAjusteInput.value = '';
+        imagenAjustePreviewContainer.style.display = 'none';
+        imagenAjustePreview.src = '';
+      });
+    }
+
     // Event listener para confirmar ajuste
     document.getElementById('btn-confirmar-ajuste').addEventListener('click', () => {
-      const montoFinal = parseFloat(document.getElementById('monto-ajustado-final').value);
-      const razon = document.getElementById('razon-ajuste').value.trim();
-
-      if (!montoFinal || montoFinal <= 0) {
-        this.showAlert('Debes ingresar un monto válido');
-        return;
-      }
-
-      // Convertir de bolívares a centavos (el backend espera centavos)
-      const montoEnCentavos = Math.round(montoFinal * 100);
-      this.procesarAjusteMonto(transaccionId, montoEnCentavos, razon || 'Ajuste de monto por discrepancia');
+      this.confirmarAjusteMonto(transaccionId);
     });
   }
 
   /**
-   * Procesar ajuste de monto
+   * Formatear tamaño de archivo para mostrar (modal de ajuste)
    */
-  procesarAjusteMonto(transaccionId, montoReal, razon) {
-    console.log('💰 Ajustando monto:', { transaccionId, montoReal, razon });
+  formatearTamañoAjuste(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  }
+
+  /**
+   * Confirmar ajuste de monto (sube imagen si hay y envía ajuste)
+   */
+  async confirmarAjusteMonto(transaccionId) {
+    const montoFinal = parseFloat(document.getElementById('monto-ajustado-final').value);
+    const razon = document.getElementById('razon-ajuste').value.trim();
+
+    if (!montoFinal || montoFinal <= 0) {
+      this.showAlert('Debes ingresar un monto válido');
+      return;
+    }
+
+    const imagenInput = document.getElementById('imagen-ajuste-monto');
+    const imagenFile = imagenInput?.files[0];
+    let imagenAjusteUrl = null;
+
+    if (imagenFile) {
+      try {
+        const btnConfirmar = document.getElementById('btn-confirmar-ajuste');
+        const textoOriginal = btnConfirmar.textContent;
+        btnConfirmar.disabled = true;
+        btnConfirmar.textContent = 'Subiendo imagen...';
+        imagenAjusteUrl = await this.subirImagenAjusteMonto(imagenFile);
+        btnConfirmar.disabled = false;
+        btnConfirmar.textContent = textoOriginal;
+      } catch (error) {
+        console.error('❌ Error subiendo imagen de ajuste:', error);
+        const btnConfirmar = document.getElementById('btn-confirmar-ajuste');
+        if (btnConfirmar) {
+          btnConfirmar.disabled = false;
+          btnConfirmar.textContent = 'Confirmar Ajuste';
+        }
+        this.showAlert(`Error al subir imagen: ${error.message || 'Error desconocido'}`);
+        return;
+      }
+    }
+
+    const montoEnCentavos = Math.round(montoFinal * 100);
+    this.procesarAjusteMonto(transaccionId, montoEnCentavos, razon || 'Ajuste de monto por discrepancia', imagenAjusteUrl);
+  }
+
+  /**
+   * Procesar ajuste de monto
+   * @param {string} transaccionId - ID de la transacción
+   * @param {number} montoReal - Monto real en centavos
+   * @param {string} razon - Razón del ajuste
+   * @param {string|null} imagenAjusteUrl - URL de imagen de soporte (opcional)
+   */
+  procesarAjusteMonto(transaccionId, montoReal, razon, imagenAjusteUrl = null) {
+    console.log('💰 Ajustando monto:', { transaccionId, montoReal, razon, imagenAjusteUrl: !!imagenAjusteUrl });
 
     // Marcar como procesando
     this.processingPayment = transaccionId;
@@ -338,13 +453,51 @@ export class VerificationModalsManager extends ModalsManager {
       window.cajeroWebSocket.isConnected &&
       window.cajeroWebSocket.isAuthenticated
     ) {
-      // Enviar ajuste - la confirmación automática se hará cuando llegue el evento monto-ajustado
-      window.cajeroWebSocket.ajustarMontoDeposito(transaccionId, montoReal, razon);
+      window.cajeroWebSocket.ajustarMontoDeposito(transaccionId, montoReal, razon, imagenAjusteUrl);
     } else {
       console.error('No hay conexión WebSocket disponible');
       this.showAlert('Error: No hay conexión disponible');
       this.processingPayment = null;
     }
+  }
+
+  /**
+   * Subir imagen de soporte para ajuste de monto al backend
+   * @param {File} archivo - Archivo de imagen
+   * @returns {Promise<string>} URL de la imagen subida
+   */
+  async subirImagenAjusteMonto(archivo) {
+    const formData = new FormData();
+    formData.append('imagen', archivo);
+
+    let token = null;
+    if (window.cajeroWebSocket && window.cajeroWebSocket.lastAuthToken) {
+      token = window.cajeroWebSocket.lastAuthToken;
+    }
+    if (!token && window.AuthManager && window.AuthManager.getToken) {
+      token = window.AuthManager.getToken();
+    }
+    if (!token) {
+      token = localStorage.getItem('cajeroToken') || localStorage.getItem('token') || sessionStorage.getItem('cajeroToken');
+    }
+    if (!token) {
+      throw new Error('No hay token de autenticación disponible. Por favor, inicia sesión nuevamente.');
+    }
+
+    const backendUrl = window.API_CONFIG?.BASE_URL || 'https://elpatio-backend.fly.dev';
+    const response = await fetch(`${backendUrl}/api/upload/imagen-ajuste-monto`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+      throw new Error(errorData.error || errorData.mensaje || 'Error al subir imagen');
+    }
+
+    const data = await response.json();
+    return data.imagen.url;
   }
 
   /**

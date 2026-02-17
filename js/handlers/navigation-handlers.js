@@ -53,6 +53,21 @@ export function createNavigationHandlers(app) {
             saldoManager.mostrarCargaSaldo(true);
             saldoManager.cargarSaldoActual(token);
             saldoManager.showInitialState();
+            // Mostrar tab "ver-saldo" por defecto
+            const handleSaldoTabChange = app?.saldoHandlers?.handleSaldoTabChange;
+            if (handleSaldoTabChange) {
+              handleSaldoTabChange("ver-saldo");
+            } else {
+              // Fallback: cambiar tabs directamente si el handler no está disponible
+              const tabContents = document.querySelectorAll(".saldo-tab-content");
+              const tabButtons = document.querySelectorAll("[data-saldo-tab]");
+              tabContents.forEach((content) => {
+                content.style.display = content.id === "saldo-tab-ver-saldo" ? "block" : "none";
+              });
+              tabButtons.forEach((btn) => {
+                btn.classList.toggle("active", btn.getAttribute("data-saldo-tab") === "ver-saldo");
+              });
+            }
           }
           break;
         case "perfil":

@@ -15,10 +15,34 @@
   margin-top: 20px;
 }
 
+/* Tabs de saldo */
+.saldo-content .tabs-container {
+  margin-bottom: 20px;
+}
+
+.saldo-tab-content {
+  margin-top: 20px;
+}
+
 /* Sección de saldo actual */
 .saldo-current-section {
   margin-bottom: 30px;
 }
+
+.saldo-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.saldo-refresh-wrap {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 
 .saldo-card {
   background: linear-gradient(135deg, var(--patio-verde-pasto) 0%, var(--patio-verde-suave) 100%);
@@ -58,14 +82,25 @@
   margin-bottom: 20px;
   position: relative;
   z-index: 1;
+  overflow: hidden;
+  width: 100%;
 }
 
-.saldo-amount {
+.saldo-amount,
+#saldo-amount,
+#saldo-comisiones-amount {
   color: white;
-  font-size: 48px;
+  font-size: clamp(20px, 4vw, 48px);
   font-weight: 700;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: none; /* Oculto por defecto hasta que se cargue */
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.2;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .saldo-loading {
@@ -86,16 +121,15 @@
 }
 
 .btn-refresh {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--patio-verde-pasto);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
+  border: 2px solid var(--patio-verde-pasto);
   transition: all 0.3s ease;
 }
 
 .btn-refresh:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--patio-verde-pasto-oscuro);
+  border-color: var(--patio-verde-pasto-oscuro);
   transform: translateY(-2px);
 }
 
@@ -168,6 +202,16 @@
 .saldo-history-table .tipo-retiro {
   color: #e74c3c;
   font-weight: 600;
+}
+
+.saldo-history-table .tipo-comision_deposito {
+  color: var(--patio-verde-oscuro, #1a5f3a);
+  font-weight: 500;
+}
+
+.saldo-history-table .tipo-comision_retiro {
+  color: var(--patio-verde-oscuro, #1a5f3a);
+  font-weight: 500;
 }
 
 .saldo-history-table .tipo-ajuste_manual {

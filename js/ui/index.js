@@ -105,6 +105,17 @@ class UIManager {
       loadMoreSaldoBtn.addEventListener("click", eventHandlers.onLoadMoreSaldo);
     }
 
+    // Event listeners para tabs de saldo
+    const saldoTabButtons = document.querySelectorAll("[data-saldo-tab]");
+    saldoTabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tabName = btn.getAttribute("data-saldo-tab");
+        if (eventHandlers.onSaldoTabChange) {
+          eventHandlers.onSaldoTabChange(tabName);
+        }
+      });
+    });
+
     // Event listeners para menú lateral
     this.sidebar.setupEventListeners(eventHandlers);
   }

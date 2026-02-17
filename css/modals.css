@@ -22,9 +22,8 @@
 .transaction-details-modal {
   background: var(--tg-theme-bg-color, #ffffff);
   border-radius: 16px;
-  max-width: 600px;
-  width: 90%;
-  max-width: min(600px, 90vw);
+  max-width: var(--modal-max-width);
+  width: var(--modal-width-pct);
   max-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -124,6 +123,27 @@
   margin: 20px 0;
 }
 
+.payment-info.highlighted {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border: 2px solid var(--patio-verde-pasto);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+  padding: 20px;
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.payment-info.highlighted h3 {
+  margin: 0;
+  color: var(--patio-verde-pasto-oscuro);
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .payment-info h3 {
   margin: 0 0 12px 0;
   color: var(--tg-theme-text-color, #333);
@@ -132,19 +152,100 @@
 
 .payment-details {
   display: grid;
-  gap: 8px;
+  gap: 12px;
 }
 
 .payment-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  transition: all 0.2s ease;
+}
+
+.payment-item:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: var(--patio-verde-pasto);
+  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.15);
+}
+
+.payment-label-value {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
 }
 
 .payment-item strong {
-  color: var(--tg-theme-hint-color, #666);
-  font-weight: 500;
+  color: var(--patio-verde-pasto-oscuro);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payment-value {
+  color: var(--tg-theme-text-color, #333);
+  font-weight: 600;
+  font-size: 16px;
+  word-break: break-word;
+}
+
+.btn-copy-item,
+.btn-copy-all {
+  background: var(--patio-verde-pasto);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.btn-copy-item {
+  padding: 6px 10px;
+  font-size: 16px;
+  min-width: 36px;
+  justify-content: center;
+}
+
+.btn-copy-item:hover,
+.btn-copy-all:hover {
+  background: var(--patio-verde-pasto-oscuro);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+}
+
+.btn-copy-item:active,
+.btn-copy-all:active {
+  transform: translateY(0);
+}
+
+.btn-copy-item.copied,
+.btn-copy-all.copied {
+  background: #2e7d32;
+  animation: copySuccess 0.3s ease;
+}
+
+@keyframes copySuccess {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .status-message {
@@ -176,6 +277,14 @@
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
   background: var(--tg-theme-bg-color, #ffffff);
+}
+
+/* Los botones con .close-btn en el pie del modal no deben usar position:absolute (solo la X del header) */
+.modal-actions .close-btn {
+  position: static;
+  right: auto;
+  top: auto;
+  transform: none;
 }
 
 .modal-actions .btn {
